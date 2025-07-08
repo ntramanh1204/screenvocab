@@ -1,0 +1,76 @@
+plugins {
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
+}
+
+android {
+    namespace 'com.ntramanh1204.screenvocab'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "com.ntramanh1204.screenvocab"
+        minSdk 26
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    // Core Android - force compatible versions
+    implementation 'androidx.core:core:1.10.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+    // Add Firebase dependencies based on your SRS
+    implementation platform('com.google.firebase:firebase-bom:32.7.0')
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-firestore'
+    implementation 'com.google.firebase:firebase-analytics'
+
+    // Navigation - use compatible versions
+    implementation 'androidx.navigation:navigation-fragment:2.6.0'
+    implementation 'androidx.navigation:navigation-ui:2.6.0'
+
+    // Fragment and Activity - FORCE older compatible versions
+    implementation 'androidx.fragment:fragment:1.5.7'
+    implementation 'androidx.activity:activity:1.7.2'
+
+    // ViewModel & LiveData
+    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.6.2'
+    implementation 'androidx.lifecycle:lifecycle-livedata:2.6.2'
+
+    // Image Loading (for thumbnails)
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+
+    // Cloudinary (for image upload)
+    implementation 'com.cloudinary:cloudinary-android:2.8.0'
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+}
+
+// Add this at the bottom to force resolution strategy
+configurations.all {
+    resolutionStrategy {
+        force 'androidx.activity:activity:1.7.2'
+        force 'androidx.activity:activity-ktx:1.7.2'
+        force 'androidx.fragment:fragment:1.5.7'
+        force 'androidx.fragment:fragment-ktx:1.5.7'
+    }
+}

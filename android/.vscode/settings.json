@@ -1,0 +1,17 @@
+{
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.import.gradle.enabled": true,
+    "java.import.gradle.wrapper.enabled": true,
+    "java.import.gradle.java.home": "${env:JAVA_HOME}",
+    "android.home": "${env:ANDROID_HOME}",
+    "android.emulator.path": "${env:ANDROID_HOME}\\emulator\\emulator.exe",
+    "android.avdManager.path": "${env:ANDROID_HOME}\\cmdline-tools\\latest\\bin\\avdmanager.bat",
+    "android.sdkManager.path": "${env:ANDROID_HOME}\\cmdline-tools\\latest\\bin\\sdkmanager.bat",
+    "gradle.nestedProjects": true,
+    "files.exclude": {
+        "**/.gradle": true,
+        "**/build": true,
+        "**/.idea": true
+    }
+}

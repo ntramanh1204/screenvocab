@@ -1,0 +1,41 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Android App",
+            "type": "shell",
+            "command": "./gradlew",
+            "args": ["build"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Clean Android App",
+            "type": "shell",
+            "command": "./gradlew",
+            "args": ["clean"],
+            "group": "build"
+        },
+        {
+            "label": "Install Debug APK",
+            "type": "shell",
+            "command": "./gradlew",
+            "args": ["installDebug"],
+            "group": "build"
+        },
+        {
+            "label": "Run Android Emulator",
+            "type": "shell",
+            "command": "emulator",
+            "args": ["-avd", "YOUR_EMULATOR_NAME"],
+            "options": {
+                "cwd": "${env:ANDROID_HOME}/emulator"
+            }
+        }
+    ]
+}

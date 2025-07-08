@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "971292554975",
+    "project_id": "screenvocab-604a5",
+    "storage_bucket": "screenvocab-604a5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:971292554975:android:ac83625d36cae701dc9b6a",
+        "android_client_info": {
+          "package_name": "com.ntramanh1204.screenvocab"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_JH0OzlFju6F7m-WlSa9Sb-k-Q2K54EU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
