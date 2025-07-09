@@ -27,6 +27,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -60,9 +65,20 @@ dependencies {
     // Cloudinary (for image upload)
     implementation 'com.cloudinary:cloudinary-android:2.8.0'
 
+    // Unit Testing
     testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-core:4.6.1'
+    // testImplementation 'org.robolectric:robolectric:4.9'
+    testImplementation 'org.robolectric:robolectric:4.10.3'
+
+    // Integration Testing
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.6.1'
+
+    // Firebase Testing
+    testImplementation 'com.google.firebase:firebase-auth'
+    androidTestImplementation 'com.google.firebase:firebase-auth'
 }
 
 // Add this at the bottom to force resolution strategy

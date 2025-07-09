@@ -19,7 +19,9 @@ public class ValidationUtils {
      * @return true if valid, false otherwise
      */
     public static boolean isValidEmail(String email) {
-        return email != null && Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        // this using Android Framework - only avai on android devices, not jvm
+        // return email != null && Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        return email != null && email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
     }
     
     /**
