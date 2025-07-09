@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">ScreenVocab</string>
+    <string name="welcome_logo">screenvocab</string>
+    <string name="welcome_subtitle">A vocabulary wallpaper generator for language learners.</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="continue_as_guest">Continue as Guest</string>
 </resources>
