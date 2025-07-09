@@ -9,4 +9,10 @@
     <dimen name="large_margin">24dp</dimen>
     <dimen name="button_spacing">48dp</dimen>
     <dimen name="button_stroke_width">2dp</dimen>
+
+    <!-- New dimensions for Sign Up screen -->
+    <dimen name="title_text_size">28sp</dimen>
+    <dimen name="small_margin">8dp</dimen>
+    <dimen name="extra_large_margin">32dp</dimen>
+    <dimen name="form_spacing">40dp</dimen>
 </resources>

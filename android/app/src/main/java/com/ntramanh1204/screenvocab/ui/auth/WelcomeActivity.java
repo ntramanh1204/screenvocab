@@ -29,8 +29,9 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void setupClickListeners() {
         btnSignUp.setOnClickListener(v -> {
-            // TODO: Navigate to Sign Up screen
-            Toast.makeText(this, "Sign Up clicked - Will implement next", Toast.LENGTH_SHORT).show();
+           // Navigate to Sign Up screen
+            Intent intent = new Intent(this, SignUpActivity.class);
+            startActivity(intent);
         });
 
         btnContinueGuest.setOnClickListener(v -> {

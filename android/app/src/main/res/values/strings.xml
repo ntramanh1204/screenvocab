@@ -4,4 +4,29 @@
     <string name="welcome_subtitle">A vocabulary wallpaper generator for language learners.</string>
     <string name="sign_up">Sign Up</string>
     <string name="continue_as_guest">Continue as Guest</string>
+
+    <!-- Sign Up Screen -->
+    <string name="sign_up_title">Sign Up</string>
+    <string name="sign_up_subtitle">First create your account.</string>
+    <string name="full_name_hint">Full name</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="confirm_password_hint">Confirm your password</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="sign_in_link">Sign In</string>
+    <string name="skip_now">Skip now --></string>
+    
+    <!-- Validation Messages -->
+    <string name="error_field_required">This field is required</string>
+    <string name="error_invalid_email">Please enter a valid email address</string>
+    <string name="error_password_too_short">Password must be at least 6 characters</string>
+    <string name="error_passwords_dont_match">Passwords don\'t match</string>
+    <string name="error_name_too_short">Name must be at least 2 characters</string>
+    
+    <!-- Success/Error Messages -->
+    <string name="success_account_created">Account created successfully!</string>
+    <string name="error_email_already_exists">Email already exists</string>
+    <string name="error_weak_password">Password is too weak</string>
+    <string name="error_network_error">Network error. Please try again.</string>
+
 </resources>
