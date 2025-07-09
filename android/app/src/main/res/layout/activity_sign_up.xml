@@ -162,45 +162,36 @@
             app:layout_constraintEnd_toEndOf="@id/btn_sign_up" />
 
         <!-- Footer Section -->
-        <TextView
-            android:id="@+id/tv_already_have_account"
+        <LinearLayout
+            android:id="@+id/ll_footer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/already_have_account"
-            android:textColor="@color/black"
-            android:fontFamily="@font/noto_sans_regular"
+            android:orientation="horizontal"
+            android:gravity="center"
             android:layout_marginTop="@dimen/button_spacing"
             app:layout_constraintTop_toBottomOf="@id/btn_sign_up"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView
-            android:id="@+id/tv_sign_in_link"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/sign_in_link"
-            android:textColor="@color/red"
-            android:fontFamily="@font/noto_sans_regular"
-            android:layout_marginStart="4dp"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintStart_toEndOf="@id/tv_already_have_account"
-            app:layout_constraintTop_toTopOf="@id/tv_already_have_account"
-            app:layout_constraintBottom_toBottomOf="@id/tv_already_have_account" />
+            <TextView
+                android:id="@+id/tv_already_have_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/already_have_account"
+                android:textColor="@color/black"
+                android:fontFamily="@font/noto_sans_regular" />
 
-        <TextView
-            android:id="@+id/tv_skip_now"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/skip_now"
-            android:textColor="@color/black"
-            android:fontFamily="@font/noto_sans_regular"
-            android:layout_marginTop="@dimen/default_margin"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintTop_toBottomOf="@id/tv_already_have_account"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <TextView
+                android:id="@+id/tv_sign_in_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_in_link"
+                android:textColor="@color/red"
+                android:fontFamily="@font/noto_sans_regular"
+                android:layout_marginStart="4dp"
+                android:clickable="true"
+                android:focusable="true" />
 
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

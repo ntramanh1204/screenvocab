@@ -30,7 +30,7 @@ public class SignUpActivity extends AppCompatActivity {
     private TextInputEditText etFullName, etEmail, etPassword, etConfirmPassword;
     private Button btnSignUp;
     private ProgressBar progressBar;
-    private TextView tvSignInLink, tvSkipNow;
+    private TextView tvSignInLink;
     
     // Firebase
     private FirebaseAuth firebaseAuth;
@@ -75,7 +75,6 @@ public class SignUpActivity extends AppCompatActivity {
         btnSignUp = findViewById(R.id.btn_sign_up);
         progressBar = findViewById(R.id.progress_bar);
         tvSignInLink = findViewById(R.id.tv_sign_in_link);
-        tvSkipNow = findViewById(R.id.tv_skip_now);
     }
     
     private void setupFocusListeners() {
@@ -193,11 +192,6 @@ public class SignUpActivity extends AppCompatActivity {
             // Navigate to Login screen
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
-        });
-        
-        tvSkipNow.setOnClickListener(v -> {
-            // TODO: Navigate to main app as guest
-            Toast.makeText(this, "Guest mode - Will implement next", Toast.LENGTH_SHORT).show();
         });
     }
     
