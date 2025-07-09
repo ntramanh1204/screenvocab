@@ -33,9 +33,16 @@
             android:exported="false"
             android:theme="@style/AppTheme" />
 
-            <!-- Sign Up Activity -->
+        <!-- Sign Up Activity -->
         <activity
             android:name=".ui.auth.SignUpActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Login Activity -->
+        <activity
+            android:name=".ui.auth.LoginActivity"
             android:exported="false"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />

@@ -190,8 +190,9 @@ public class SignUpActivity extends AppCompatActivity {
         btnSignUp.setOnClickListener(v -> attemptSignUp());
         
         tvSignInLink.setOnClickListener(v -> {
-            // TODO: Navigate to Sign In screen
-            Toast.makeText(this, "Sign In screen - Will implement next", Toast.LENGTH_SHORT).show();
+            // Navigate to Login screen
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
         });
         
         tvSkipNow.setOnClickListener(v -> {
