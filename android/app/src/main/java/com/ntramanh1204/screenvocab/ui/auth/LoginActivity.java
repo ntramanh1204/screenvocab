@@ -200,8 +200,10 @@ public class LoginActivity extends AppCompatActivity {
                             showLoadingState(false);
                             Toast.makeText(this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
 
-                            // TODO: Navigate to Dashboard
-                            // For now, just finish this activity
+                            // Navigate to Dashboard
+                            Intent intent = new Intent(this, com.ntramanh1204.screenvocab.ui.dashboard.DashboardActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
                             finish();
                         }
                     } else {

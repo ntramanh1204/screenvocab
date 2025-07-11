@@ -15,4 +15,8 @@
     <dimen name="small_margin">8dp</dimen>
     <dimen name="extra_large_margin">32dp</dimen>
     <dimen name="form_spacing">40dp</dimen>
+
+    <!-- Dashboard dimensions -->
+    <dimen name="card_corner_radius">8dp</dimen>
+    <dimen name="card_elevation">2dp</dimen>
 </resources>

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ntramanh1204.screenvocab.ui.auth.WelcomeActivity;
+import com.ntramanh1204.screenvocab.ui.dashboard.DashboardActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,14 +24,24 @@ public class MainActivity extends AppCompatActivity {
 
         if (currentUser != null) {
             // User is already logged in, navigate to Dashboard
-            // TODO: Navigate to Dashboard
-            // For now, just show welcome screen
-            startActivity(new Intent(this, WelcomeActivity.class));
+            navigateToDashboard();
         } else {
             // User is not logged in, show welcome screen
-            startActivity(new Intent(this, WelcomeActivity.class));
+            navigateToWelcome();
         }
 
         finish(); // Close MainActivity so user can't go back to it
+    }
+
+    private void navigateToDashboard() {
+        Intent intent = new Intent(this, DashboardActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+    private void navigateToWelcome() {
+        Intent intent = new Intent(this, WelcomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 }

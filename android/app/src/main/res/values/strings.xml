@@ -51,4 +51,14 @@
     <!-- Success Messages -->
     <string name="login_success">Welcome back!</string>
 
+    <string name="empty_wallpaper_prompt">Nothing here. Create your first wallpaper?</string>
+
+    <string name="wallpaper_image">Hehehe</string>
+
+    <string name="empty_wallpaper_icon">empty wallpaper icon</string>
+
+    <string name="empty_wallpapers_message">empty wallpapers message</string>
+
+    <string name="create_first_wallpaper">create first wallpaper</string>
+
 </resources>

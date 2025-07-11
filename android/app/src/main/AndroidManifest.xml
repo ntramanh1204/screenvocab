@@ -27,6 +27,13 @@
             </intent-filter>
         </activity>
 
+        <!-- Dashboard Activity -->
+        <activity
+            android:name=".ui.dashboard.DashboardActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize" />
+
         <!-- Welcome Activity -->
         <activity
             android:name=".ui.auth.WelcomeActivity"

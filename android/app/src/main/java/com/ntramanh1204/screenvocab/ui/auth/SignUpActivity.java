@@ -296,8 +296,9 @@ public class SignUpActivity extends AppCompatActivity {
                 showLoadingState(false);
                 Toast.makeText(this, getString(R.string.success_account_created), Toast.LENGTH_LONG).show();
                 
-                // TODO: Navigate to main app
-                // For now, just finish this activity
+                Intent intent = new Intent(this, com.ntramanh1204.screenvocab.ui.dashboard.DashboardActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
                 finish();
             })
             .addOnFailureListener(e -> {
