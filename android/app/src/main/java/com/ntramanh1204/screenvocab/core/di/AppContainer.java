@@ -1,0 +1,116 @@
+package com.ntramanh1204.screenvocab.core.di;
+
+import androidx.room.Room;
+import com.ntramanh1204.screenvocab.ScreenVocabApp;
+import com.ntramanh1204.screenvocab.data.local.database.ScreenVocabDatabase;
+import com.ntramanh1204.screenvocab.data.mapper.UserMapper;
+import com.ntramanh1204.screenvocab.data.remote.CloudinaryDataSource;
+import com.ntramanh1204.screenvocab.data.remote.FirebaseAuthDataSource;
+import com.ntramanh1204.screenvocab.data.remote.FirestoreDataSource;
+import com.ntramanh1204.screenvocab.data.repository.AuthRepositoryImpl;
+import com.ntramanh1204.screenvocab.data.repository.CollectionRepositoryImpl;
+import com.ntramanh1204.screenvocab.data.repository.UserRepositoryImpl;
+import com.ntramanh1204.screenvocab.data.repository.WallpaperRepositoryImpl;
+import com.ntramanh1204.screenvocab.data.repository.WordRepositoryImpl;
+import com.ntramanh1204.screenvocab.domain.repository.AuthRepository;
+import com.ntramanh1204.screenvocab.domain.repository.CollectionRepository;
+import com.ntramanh1204.screenvocab.domain.repository.UserRepository;
+import com.ntramanh1204.screenvocab.domain.repository.WallpaperRepository;
+import com.ntramanh1204.screenvocab.domain.repository.WordRepository;
+import com.ntramanh1204.screenvocab.domain.usecase.auth.CreateUserProfileUseCase;
+import com.ntramanh1204.screenvocab.domain.usecase.auth.LoginUseCase;
+import com.ntramanh1204.screenvocab.domain.usecase.auth.SignUpUseCase;
+
+public class AppContainer {
+    private static AppContainer instance;
+
+    // Database
+    private ScreenVocabDatabase database;
+
+    // Data sources
+    private FirebaseAuthDataSource authDataSource;
+    private FirestoreDataSource firestoreDataSource;
+    private CloudinaryDataSource cloudinaryDataSource;
+
+    // Repositories
+    private AuthRepository authRepository;
+    private UserRepository userRepository;
+    private CollectionRepository collectionRepository;
+    private WallpaperRepository wallpaperRepository;
+    private WordRepository wordRepository;
+
+    // Use cases
+    private LoginUseCase loginUseCase;
+    private SignUpUseCase signUpUseCase;
+    private CreateUserProfileUseCase createUserProfileUseCase;
+
+    // Mappers
+    private UserMapper userMapper;
+
+    private AppContainer() {
+        initializeDependencies();
+    }
+
+    public static AppContainer getInstance() {
+        if (instance == null) {
+            instance = new AppContainer();
+        }
+        return instance;
+    }
+
+    private void initializeDependencies() {
+        // 1. Initialize database
+        database = Room.databaseBuilder(
+                ScreenVocabApp.getContext(),
+                ScreenVocabDatabase.class,
+                "screenvocab_db"
+        ).build();
+
+        // 2. Initialize mappers
+        userMapper = new UserMapper();
+
+        // 3. Initialize data sources
+        authDataSource = new FirebaseAuthDataSource();
+        firestoreDataSource = new FirestoreDataSource();
+        cloudinaryDataSource = new CloudinaryDataSource();
+
+        // 4. Initialize repositories
+        authRepository = new AuthRepositoryImpl(
+                authDataSource,
+                userMapper
+        );
+
+        userRepository = new UserRepositoryImpl(
+                database.userDao(),
+                firestoreDataSource
+        );
+
+        collectionRepository = new CollectionRepositoryImpl(
+                database.collectionDao()
+        );
+
+        wallpaperRepository = new WallpaperRepositoryImpl(
+                database.wallpaperDao()
+        );
+
+        wordRepository = new WordRepositoryImpl(
+                database.wordDao()
+        );
+
+        // 5. Initialize use cases
+        loginUseCase = new LoginUseCase(authRepository);
+        signUpUseCase = new SignUpUseCase(authRepository);
+        createUserProfileUseCase = new CreateUserProfileUseCase(userRepository);
+    }
+
+    // Getters
+    public LoginUseCase getLoginUseCase() { return loginUseCase; }
+    public SignUpUseCase getSignUpUseCase() { return signUpUseCase; }
+    public CreateUserProfileUseCase getCreateUserProfileUseCase() { return createUserProfileUseCase; }
+
+    public AuthRepository getAuthRepository() { return authRepository; }
+    public UserRepository getUserRepository() { return userRepository; }
+    public CollectionRepository getCollectionRepository() { return collectionRepository; }
+    public WallpaperRepository getWallpaperRepository() { return wallpaperRepository; }
+    public WordRepository getWordRepository() { return wordRepository; }
+}

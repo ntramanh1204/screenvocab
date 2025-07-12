@@ -4,8 +4,13 @@
 
      <!-- Internet permission for Firebase -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
 
     <application
+        android:name=".ScreenVocabApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -16,40 +21,39 @@
         android:theme="@style/Theme.ScreenVocab"
         tools:targetApi="31">
 
-        <!-- Main Activity (launcher) -->
+        <!-- Main Activity (launcher, kiểm tra đăng nhập) -->
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <!-- Dashboard Activity -->
         <activity
-            android:name=".ui.dashboard.DashboardActivity"
+            android:name=".presentation.dashboard.DashboardActivity"
             android:exported="false"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />
 
         <!-- Welcome Activity -->
         <activity
-            android:name=".ui.auth.WelcomeActivity"
+            android:name=".presentation.auth.WelcomeActivity"
             android:exported="false"
             android:theme="@style/AppTheme" />
 
         <!-- Sign Up Activity -->
         <activity
-            android:name=".ui.auth.SignUpActivity"
+            android:name=".presentation.auth.SignUpActivity"
             android:exported="false"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />
 
         <!-- Login Activity -->
         <activity
-            android:name=".ui.auth.LoginActivity"
+            android:name=".presentation.auth.LoginActivity"
             android:exported="false"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />

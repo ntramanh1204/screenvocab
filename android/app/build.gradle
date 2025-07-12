@@ -15,6 +15,12 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     buildTypes {
@@ -51,6 +57,15 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:2.6.0'
     implementation 'androidx.navigation:navigation-ui:2.6.0'
 
+    // Room components
+    implementation 'androidx.room:room-runtime:2.5.2'
+    annotationProcessor 'androidx.room:room-compiler:2.5.2'
+    implementation 'androidx.room:room-rxjava3:2.5.2'
+
+    // RxJava
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.8'
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
+
     // Fragment and Activity - FORCE older compatible versions
     implementation 'androidx.fragment:fragment:1.5.7'
     implementation 'androidx.activity:activity:1.7.2'
@@ -58,6 +73,7 @@ dependencies {
     // ViewModel & LiveData
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.6.2'
     implementation 'androidx.lifecycle:lifecycle-livedata:2.6.2'
+    implementation 'androidx.lifecycle:lifecycle-runtime:2.6.2'
 
     // Image Loading (for thumbnails)
     implementation 'com.github.bumptech.glide:glide:4.16.0'
@@ -69,7 +85,6 @@ dependencies {
     // Unit Testing
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:4.6.1'
-    // testImplementation 'org.robolectric:robolectric:4.9'
     testImplementation 'org.robolectric:robolectric:4.10.3'
 
     // Integration Testing
@@ -80,14 +95,20 @@ dependencies {
     // Firebase Testing
     testImplementation 'com.google.firebase:firebase-auth'
     androidTestImplementation 'com.google.firebase:firebase-auth'
+
 }
 
 // Add this at the bottom to force resolution strategy
 configurations.all {
     resolutionStrategy {
         force 'androidx.activity:activity:1.7.2'
-        force 'androidx.activity:activity-ktx:1.7.2'
         force 'androidx.fragment:fragment:1.5.7'
-        force 'androidx.fragment:fragment-ktx:1.5.7'
+        force 'androidx.lifecycle:lifecycle-viewmodel:2.6.2'
+        force 'androidx.lifecycle:lifecycle-livedata:2.6.2'
+        force 'androidx.lifecycle:lifecycle-runtime:2.6.2'
+
+        // Force compatible lifecycle versions
+        force 'androidx.lifecycle:lifecycle-common:2.6.2'
+        force 'androidx.lifecycle:lifecycle-process:2.6.2'
     }
 }
