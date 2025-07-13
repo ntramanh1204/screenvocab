@@ -48,6 +48,11 @@ public class FirebaseAuthDataSource {
         return Single.fromCallable(() -> firebaseAuth.getCurrentUser());
     }
 
+    public String getCurrentUserId() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        return currentUser != null ? currentUser.getUid() : null;
+    }
+
     public Completable sendPasswordResetEmail(String email) {
         return Completable.create(emitter -> {
             firebaseAuth.sendPasswordResetEmail(email)

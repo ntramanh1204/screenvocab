@@ -1,4 +1,4 @@
-package com.ntramanh1204.screenvocab.utils;
+package com.ntramanh1204.screenvocab.core.utils;
 
 import android.util.Patterns;
 
@@ -56,5 +56,14 @@ public class ValidationUtils {
                isValidEmail(email) && 
                isValidPassword(password) && 
                doPasswordsMatch(password, confirmPassword);
+    }
+
+    /**
+     * Checks if string is null or empty after trimming
+     * @param text The text to check
+     * @return true if empty, false otherwise
+     */
+    public static boolean isEmpty(String text) {
+        return text == null || text.trim().isEmpty();
     }
 }

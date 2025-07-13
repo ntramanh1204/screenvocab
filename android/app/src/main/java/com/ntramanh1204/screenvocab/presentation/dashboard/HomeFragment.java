@@ -171,10 +171,33 @@ public class HomeFragment extends Fragment implements WallpaperGridAdapter.OnWal
         rvWallpapers.setVisibility(View.VISIBLE);
     }
 
+    public interface OnNavigateToWordSetsListener {
+    void onNavigateToWordSets();
+}
+
+private OnNavigateToWordSetsListener navigateListener;
+
+@Override
+public void onAttach(@NonNull Context context) {
+    super.onAttach(context);
+    if (context instanceof OnNavigateToWordSetsListener) {
+        navigateListener = (OnNavigateToWordSetsListener) context;
+    }
+}
+
     private void navigateToWordSetsTab() {
         if (!isAdded()) return;
-        Toast.makeText(getContext(), "Navigate to Word Sets", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getContext(), "Navigate to Word Sets", Toast.LENGTH_SHORT).show();
         // TODO: Navigate to Word Sets tab
+        if (navigateListener != null) {
+            navigateListener.onNavigateToWordSets();
+        }
+        
+    }
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        navigateListener = null;
     }
 
     @Override

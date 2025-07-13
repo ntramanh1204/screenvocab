@@ -20,6 +20,14 @@ import com.ntramanh1204.screenvocab.domain.repository.WordRepository;
 import com.ntramanh1204.screenvocab.domain.usecase.auth.CreateUserProfileUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.auth.LoginUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.auth.SignUpUseCase;
+import com.ntramanh1204.screenvocab.domain.usecase.collection.CreateCollectionUseCase;
+import com.ntramanh1204.screenvocab.domain.usecase.collection.DeleteCollectionUseCase;
+import com.ntramanh1204.screenvocab.domain.usecase.collection.GetCollectionsByUserUseCase;
+import com.ntramanh1204.screenvocab.domain.usecase.collection.UpdateCollectionUseCase;
+import com.ntramanh1204.screenvocab.domain.usecase.word.CreateWordUseCase;
+import com.ntramanh1204.screenvocab.domain.usecase.word.DeleteWordUseCase;
+import com.ntramanh1204.screenvocab.domain.usecase.word.GetWordsByCollectionUseCase;
+import com.ntramanh1204.screenvocab.domain.usecase.word.UpdateWordUseCase;
 
 public class AppContainer {
     private static AppContainer instance;
@@ -44,6 +52,16 @@ public class AppContainer {
     private SignUpUseCase signUpUseCase;
     private CreateUserProfileUseCase createUserProfileUseCase;
 
+    private CreateWordUseCase createWordUseCase;
+    private UpdateWordUseCase updateWordUseCase;
+    private DeleteWordUseCase deleteWordUseCase;
+    private GetWordsByCollectionUseCase getWordsByCollectionUseCase;
+
+    private CreateCollectionUseCase createCollectionUseCase;
+    private UpdateCollectionUseCase updateCollectionUseCase;
+    private DeleteCollectionUseCase deleteCollectionUseCase;
+    private GetCollectionsByUserUseCase getCollectionsByUserUseCase;
+
     // Mappers
     private UserMapper userMapper;
 
@@ -59,12 +77,8 @@ public class AppContainer {
     }
 
     private void initializeDependencies() {
-        // 1. Initialize database
-        database = Room.databaseBuilder(
-                ScreenVocabApp.getContext(),
-                ScreenVocabDatabase.class,
-                "screenvocab_db"
-        ).build();
+        // 1. Get database instance from ScreenVocabApp (không khởi tạo mới)
+        database = ScreenVocabApp.getInstance().getDatabase();
 
         // 2. Initialize mappers
         userMapper = new UserMapper();
@@ -101,12 +115,33 @@ public class AppContainer {
         loginUseCase = new LoginUseCase(authRepository);
         signUpUseCase = new SignUpUseCase(authRepository);
         createUserProfileUseCase = new CreateUserProfileUseCase(userRepository);
+
+        createWordUseCase = new CreateWordUseCase(wordRepository, collectionRepository);
+        updateWordUseCase = new UpdateWordUseCase(wordRepository);
+        deleteWordUseCase = new DeleteWordUseCase(wordRepository);
+        getWordsByCollectionUseCase = new GetWordsByCollectionUseCase(wordRepository);
+
+        createCollectionUseCase = new CreateCollectionUseCase(collectionRepository);
+        updateCollectionUseCase = new UpdateCollectionUseCase(collectionRepository);
+        deleteCollectionUseCase = new DeleteCollectionUseCase(collectionRepository);
+        getCollectionsByUserUseCase = new GetCollectionsByUserUseCase(collectionRepository);
+
     }
 
     // Getters
     public LoginUseCase getLoginUseCase() { return loginUseCase; }
     public SignUpUseCase getSignUpUseCase() { return signUpUseCase; }
     public CreateUserProfileUseCase getCreateUserProfileUseCase() { return createUserProfileUseCase; }
+
+    public CreateWordUseCase getCreateWordUseCase() { return createWordUseCase; }
+    public UpdateWordUseCase getUpdateWordUseCase() { return updateWordUseCase; }
+    public DeleteWordUseCase getDeleteWordUseCase() { return deleteWordUseCase; }
+    public GetWordsByCollectionUseCase getGetWordsByCollectionUseCase() { return getWordsByCollectionUseCase; }
+
+    public CreateCollectionUseCase getCreateCollectionUseCase() { return createCollectionUseCase; }
+    public UpdateCollectionUseCase getUpdateCollectionUseCase() { return updateCollectionUseCase; }
+    public DeleteCollectionUseCase getDeleteCollectionUseCase() { return deleteCollectionUseCase; }
+    public GetCollectionsByUserUseCase getGetCollectionsByUserUseCase() { return getCollectionsByUserUseCase; }
 
     public AuthRepository getAuthRepository() { return authRepository; }
     public UserRepository getUserRepository() { return userRepository; }

@@ -8,8 +8,10 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.ntramanh1204.screenvocab.R;
+import com.ntramanh1204.screenvocab.presentation.collection.WordSetListFragment;
 
-public class DashboardActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
+public class DashboardActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener,
+    HomeFragment.OnNavigateToWordSetsListener {
 
     private BottomNavigationView bottomNavigationView;
 
@@ -45,6 +47,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationBa
             selectedFragment = new HomeFragment();
         } else if (itemId == R.id.nav_word_sets) {
 //            selectedFragment = new WordSetsFragment();
+            selectedFragment = new WordSetListFragment();
         } else if (itemId == R.id.nav_create) {
             // Show bottom sheet for create options
             showCreateOptionsBottomSheet();
@@ -73,5 +76,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationBa
     private void showCreateOptionsBottomSheet() {
 //        CreateOptionsBottomSheet bottomSheet = new CreateOptionsBottomSheet();
 //        bottomSheet.show(getSupportFragmentManager(), "create_options");
+    }
+
+        @Override
+    public void onNavigateToWordSets() {
+        bottomNavigationView.setSelectedItemId(R.id.nav_word_sets);
     }
 }

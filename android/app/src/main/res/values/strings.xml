@@ -60,5 +60,6 @@
     <string name="empty_wallpapers_message">empty wallpapers message</string>
 
     <string name="create_first_wallpaper">create first wallpaper</string>
+    <string name="delete_word">Delete Word</string>
 
 </resources>

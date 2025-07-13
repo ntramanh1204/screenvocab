@@ -16,13 +16,15 @@ public class WordEntity {
     public String language;
     public int position;
     public long createdAt;
-    public String collectionId; // foreign key
+    public String collectionId;
+    public String userId;
+    public String syncStatus;
 
     public WordEntity() {
     }
 
     @Ignore
-    public WordEntity(@NonNull String wordId, String primaryText, String secondaryText, String tertiaryText, String language, int position, long createdAt, String collectionId) {
+    public WordEntity(@NonNull String wordId, String primaryText, String secondaryText, String tertiaryText, String language, int position, long createdAt, String collectionId, String userId, String syncStatus) {
         this.wordId = wordId;
         this.primaryText = primaryText;
         this.secondaryText = secondaryText;
@@ -31,6 +33,8 @@ public class WordEntity {
         this.position = position;
         this.createdAt = createdAt;
         this.collectionId = collectionId;
+        this.userId = userId;
+        this.syncStatus = syncStatus;
     }
 
     @NonNull
@@ -96,5 +100,21 @@ public class WordEntity {
 
     public void setCollectionId(String collectionId) {
         this.collectionId = collectionId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getSyncStatus() {
+        return syncStatus;
+    }
+
+    public void setSyncStatus(String syncStatus) {
+        this.syncStatus = syncStatus;
     }
 }

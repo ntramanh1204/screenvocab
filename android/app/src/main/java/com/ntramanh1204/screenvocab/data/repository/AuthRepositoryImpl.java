@@ -43,4 +43,13 @@ public class AuthRepositoryImpl implements AuthRepository {
     public Completable sendPasswordResetEmail(String email) {
         return firebaseAuthDataSource.sendPasswordResetEmail(email);
     }
+
+    @Override
+    public String getCurrentUserId() {
+        try {
+            return firebaseAuthDataSource.getCurrentUserId(); // Cần thêm method này trong FirebaseAuthDataSource
+        } catch (Exception e) {
+            return null; // Hoặc throw exception
+        }
+    }
 }

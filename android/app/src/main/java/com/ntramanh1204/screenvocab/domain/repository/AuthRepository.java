@@ -39,4 +39,9 @@ public interface AuthRepository {
      * Create user profile
      */
 //    Completable createUserProfile(UserEntity userEntity);
+
+    // Thêm method này
+    String getCurrentUserId(); // Synchronous method
+    // Hoặc nếu muốn async:
+    // Single<String> getCurrentUserId();
 }

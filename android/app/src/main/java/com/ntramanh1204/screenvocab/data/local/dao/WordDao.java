@@ -23,4 +23,6 @@ public interface WordDao {
     Completable delete(WordEntity word);
     @Query("SELECT * FROM words WHERE collectionId = :collectionId")
     Single<List<WordEntity>> getWordsByCollection(String collectionId);
+    @Query("SELECT * FROM words WHERE syncStatus = 'PENDING'")
+    Single<List<WordEntity>> getPendingWords();
 }

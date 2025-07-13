@@ -10,6 +10,7 @@ import com.ntramanh1204.screenvocab.core.di.AppContainer;
 public class ScreenVocabApp extends Application {
     private static ScreenVocabApp instance;
     private ScreenVocabDatabase database;
+    private AppContainer appContainer;
 
     @Override
     public void onCreate() {
@@ -20,7 +21,7 @@ public class ScreenVocabApp extends Application {
                 ScreenVocabDatabase.class,
                 "screenvocab_db"
         ).build();
-        AppContainer.getInstance();
+        appContainer = AppContainer.getInstance();
     }
 
     public static ScreenVocabApp getInstance() {
@@ -33,4 +34,5 @@ public class ScreenVocabApp extends Application {
     public static Context getContext() {
         return instance.getApplicationContext();
     }
+    public AppContainer getAppContainer() { return appContainer; }
 }

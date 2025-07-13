@@ -18,7 +18,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.ntramanh1204.screenvocab.R;
 import com.ntramanh1204.screenvocab.domain.model.User;
 import com.ntramanh1204.screenvocab.presentation.dashboard.DashboardActivity;
-import com.ntramanh1204.screenvocab.utils.ValidationUtils;
+import com.ntramanh1204.screenvocab.core.utils.ValidationUtils;
 
 public class SignUpActivity extends AppCompatActivity {
     private TextInputLayout tilFullName, tilEmail, tilPassword, tilConfirmPassword;
