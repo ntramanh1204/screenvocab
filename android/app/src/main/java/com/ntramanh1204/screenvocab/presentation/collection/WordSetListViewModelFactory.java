@@ -6,9 +6,11 @@ import com.ntramanh1204.screenvocab.core.di.AppContainer;
 import com.ntramanh1204.screenvocab.domain.usecase.collection.GetCollectionsByUserUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.collection.DeleteCollectionUseCase;
 import com.ntramanh1204.screenvocab.domain.repository.AuthRepository;
+import com.ntramanh1204.screenvocab.domain.usecase.collection.UpdateCollectionUseCase;
 
 public class WordSetListViewModelFactory implements ViewModelProvider.Factory {
     private final GetCollectionsByUserUseCase getCollectionsByUserUseCase;
+    private final UpdateCollectionUseCase updateCollectionUseCase;
     private final DeleteCollectionUseCase deleteCollectionUseCase;
     private final AuthRepository authRepository;
 
@@ -16,6 +18,7 @@ public class WordSetListViewModelFactory implements ViewModelProvider.Factory {
         this.getCollectionsByUserUseCase = appContainer.getGetCollectionsByUserUseCase();
         this.deleteCollectionUseCase = appContainer.getDeleteCollectionUseCase();
         this.authRepository = appContainer.getAuthRepository();
+        this.updateCollectionUseCase = appContainer.getUpdateCollectionUseCase();
     }
 
     @SuppressWarnings("unchecked")
@@ -25,6 +28,7 @@ public class WordSetListViewModelFactory implements ViewModelProvider.Factory {
             return (T) new WordSetListViewModel(
                     getCollectionsByUserUseCase,
                     deleteCollectionUseCase,
+                    updateCollectionUseCase,
                     authRepository
             );
         }

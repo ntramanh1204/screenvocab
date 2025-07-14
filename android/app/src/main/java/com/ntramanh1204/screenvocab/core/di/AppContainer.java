@@ -123,7 +123,7 @@ public class AppContainer {
 
         createCollectionUseCase = new CreateCollectionUseCase(collectionRepository);
         updateCollectionUseCase = new UpdateCollectionUseCase(collectionRepository);
-        deleteCollectionUseCase = new DeleteCollectionUseCase(collectionRepository);
+        deleteCollectionUseCase = new DeleteCollectionUseCase(collectionRepository, wordRepository);
         getCollectionsByUserUseCase = new GetCollectionsByUserUseCase(collectionRepository);
 
     }

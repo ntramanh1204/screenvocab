@@ -190,41 +190,36 @@ public class CreateWordSetViewModel extends ViewModel {
 
     public void saveWordSet() {
         if (!validateForm()) {
+            Log.d("SaveWordSet", "Validation failed, aborting save");
+            _isLoading.setValue(false);
             return;
         }
-
         _isLoading.setValue(true);
         _error.setValue(null);
-
         String currentUserId = getCurrentUserId();
         if (currentUserId == null) {
             _error.setValue("User not authenticated");
             _isLoading.setValue(false);
             return;
         }
-
-        // Create collection first
         CreateCollectionUseCase.Params params = new CreateCollectionUseCase.Params(
-                _title.getValue().trim(),
-                currentUserId
-        );
-
+                _title.getValue().trim(), currentUserId);
+        Log.d("SaveWordSet", "Saving collection: " + _title.getValue() + ", words: " + getValidWords().size());
         compositeDisposable.add(
                 createCollectionUseCase.execute(params)
-                        .flatMap(collection -> {
-                            // Save all words to the collection
-                            return saveWordsToCollection(collection);
-                        })
+                        .flatMap(collection -> saveWordsToCollection(collection))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 collection -> {
+                                    Log.d("SaveWordSet", "Save successful");
                                     _isLoading.setValue(false);
                                     _isSaveSuccessful.setValue(true);
                                 },
                                 throwable -> {
+                                    Log.e("SaveWordSet", "Save failed: " + throwable.getMessage());
                                     _isLoading.setValue(false);
-                                    _error.setValue("Failed to save word set: " + throwable.getMessage());
+                                    _error.setValue("Failed to save: " + throwable.getMessage());
                                 }
                         )
         );
@@ -255,23 +250,16 @@ public class CreateWordSetViewModel extends ViewModel {
                 .flatMapCompletable(wordItem -> {
                     CreateWordUseCase.Params wordParams = new CreateWordUseCase.Params(
                             wordItem.getTerm().trim(),
+                            wordItem.getDefinition().trim(), // Đổi thứ tự để khớp REQ-VOCAB-001
                             wordItem.getPronunciation().trim(),
-                            wordItem.getDefinition().trim(),
                             "en", // Ngôn ngữ mặc định
                             collection.getCollectionId().trim(),
                             currentUserId
                     );
                     return createWordUseCase.execute(wordParams).ignoreElement();
                 })
-                .onErrorResumeNext(throwable -> {
-                    // Xóa collection nếu lưu từ thất bại
-                    return createCollectionUseCase.collectionRepository.deleteCollection(
-                            CollectionMapper.toEntity(collection)
-                    ).andThen(Completable.error(throwable));
-                })
-                .toSingle(() -> collection);
+                .andThen(Single.just(collection)); // Không xóa collection nếu thất bại
     }
-
     private List<WordItem> getValidWords() {
         List<WordItem> currentWords = _words.getValue();
         if (currentWords == null) {
@@ -284,25 +272,26 @@ public class CreateWordSetViewModel extends ViewModel {
     }
 
     private boolean validateForm() {
+        List<WordItem> currentWords = _words.getValue();
+        if (currentWords == null || currentWords.isEmpty()) {
+            _error.setValue("No words available");
+            return false;
+        }
         String currentTitle = _title.getValue();
-        Log.d("ValidateForm", "Title: " + currentTitle); // Debug tiêu đề
         if (currentTitle == null || currentTitle.trim().isEmpty()) {
             _error.setValue("Title cannot be empty");
             return false;
         }
-
         List<WordItem> validWords = getValidWords();
-        Log.d("ValidateForm", "Valid words count: " + validWords.size()); // Debug số từ hợp lệ
+        Log.d("ValidateForm", "Valid words count: " + validWords.size());
         if (validWords.size() < MIN_WORDS_REQUIRED) {
             _error.setValue("Please add at least " + MIN_WORDS_REQUIRED + " valid words (term and definition required)");
             return false;
         }
-
         if (validWords.size() > MAX_WORDS_ALLOWED) {
-            _error.setValue("Maximum " + MAX_WORDS_ALLOWED + " words allowed per collection");
+            _error.setValue("Maximum " + MAX_WORDS_ALLOWED + " words allowed");
             return false;
         }
-
         return true;
     }
 

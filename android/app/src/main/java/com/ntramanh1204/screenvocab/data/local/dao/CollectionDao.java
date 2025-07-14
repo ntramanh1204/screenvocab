@@ -21,8 +21,9 @@ public interface CollectionDao {
     Completable update(CollectionEntity collection);
     @Delete
     Completable delete(CollectionEntity collection);
-    @Query("SELECT * FROM collections WHERE userId = :userId")
+    @Query("SELECT * FROM collections WHERE userId = :userId ORDER BY createdAt DESC")
     Single<List<CollectionEntity>> getCollectionsByUser(String userId);
     @Query("SELECT * FROM collections WHERE syncStatus = 'PENDING'")
     Single<List<CollectionEntity>> getPendingCollections();
+
 }

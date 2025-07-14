@@ -1,5 +1,7 @@
 package com.ntramanh1204.screenvocab.presentation.collection;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,34 +50,53 @@ public class WordItemAdapter extends ListAdapter<WordItem, WordItemAdapter.WordV
         holder.bind(item);
 
         holder.btnDelete.setOnClickListener(v -> {
-            if (onWordDelete != null) onWordDelete.accept(position);
-        });
-
-        // Xử lý khi người dùng sửa nội dung TERM
-        holder.etTerm.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus && onWordChanged != null) {
-                WordItem updated = item.withTerm(holder.etTerm.getText().toString());
-                onWordChanged.accept(position, updated);
+            if (onWordDelete != null) {
+                int adapterPosition = holder.getAdapterPosition();
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    onWordDelete.accept(adapterPosition);
+                }
             }
         });
 
-        // Xử lý khi người dùng sửa nội dung PRONUNCIATION
-        holder.etPronunciation.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus && onWordChanged != null) {
-                WordItem updated = item.withPronunciation(holder.etPronunciation.getText().toString());
-                onWordChanged.accept(position, updated);
+        holder.etTerm.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void afterTextChanged(Editable s) {
+                if (onWordChanged != null) {
+                    int adapterPosition = holder.getAdapterPosition();
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        onWordChanged.accept(adapterPosition, item.withTerm(s.toString()));
+                    }
+                }
             }
         });
 
-        // Xử lý khi người dùng sửa nội dung DEFINITION
-        holder.etDefinition.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus && onWordChanged != null) {
-                WordItem updated = item.withDefinition(holder.etDefinition.getText().toString());
-                onWordChanged.accept(position, updated);
+        holder.etPronunciation.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void afterTextChanged(Editable s) {
+                if (onWordChanged != null) {
+                    int adapterPosition = holder.getAdapterPosition();
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        onWordChanged.accept(adapterPosition, item.withPronunciation(s.toString()));
+                    }
+                }
+            }
+        });
+
+        holder.etDefinition.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void afterTextChanged(Editable s) {
+                if (onWordChanged != null) {
+                    int adapterPosition = holder.getAdapterPosition();
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        onWordChanged.accept(adapterPosition, item.withDefinition(s.toString()));
+                    }
+                }
             }
         });
     }
-
     public void setOnWordChangedListener(BiConsumer<Integer, WordItem> listener) {
         this.onWordChanged = listener;
     }

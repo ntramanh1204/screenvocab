@@ -114,29 +114,25 @@ public class CreateWordUseCase {
 
     // Check for duplicate words in collection - REQ-VOCAB-007
     private Completable checkDuplicateWord(Params params) {
-        // TODO: CHECK TRUNG TU CHAT HON
-//        return wordRepository.getWordsByCollection(params.getCollectionId())
-//                .flatMapCompletable(words -> {
-//                    boolean hasDuplicate = words.stream()
-//                            .anyMatch(wordEntity ->
-//                                    wordEntity.getPrimaryText().equalsIgnoreCase(params.getPrimaryText().trim()) ||
-//                                            wordEntity.getSecondaryText().equalsIgnoreCase(params.getSecondaryText().trim())
-//                            );
-//
-//                    if (hasDuplicate) {
-//                        return Completable.error(new IllegalArgumentException("Word already exists in collection"));
-//                    }
-//                    return Completable.complete();
-//                });
-        return Completable.complete(); // Bỏ kiểm tra trùng từ để cho phép trùng primaryText và secondaryText
+        return wordRepository.getWordsByCollection(params.getCollectionId())
+                .flatMapCompletable(words -> {
+                    boolean hasDuplicate = words.stream()
+                            .anyMatch(wordEntity ->
+                                    wordEntity.getPrimaryText().equalsIgnoreCase(params.getPrimaryText().trim()) &&
+                                            wordEntity.getSecondaryText().equalsIgnoreCase(params.getSecondaryText().trim())
+                            );
+                    if (hasDuplicate) {
+                        return Completable.error(new IllegalArgumentException("Word already exists in collection"));
+                    }
+                    return Completable.complete();
+                });
     }
 
     // Create and save word
     private Single<Word> createAndSaveWord(Params params) {
         return wordRepository.getWordsByCollection(params.getCollectionId())
-                .map(words -> words.size()) // Get next position
+                .map(words -> words.size())
                 .flatMap(nextPosition -> {
-                    // Create new word using factory method
                     Word newWord = Word.create(
                             params.getPrimaryText().trim(),
                             params.getSecondaryText().trim(),
@@ -145,8 +141,6 @@ public class CreateWordUseCase {
                             nextPosition,
                             params.getCollectionId()
                     );
-
-                    // Convert to entity and save
                     return wordRepository.insertWord(WordMapper.toEntity(newWord))
                             .andThen(Single.just(newWord));
                 });

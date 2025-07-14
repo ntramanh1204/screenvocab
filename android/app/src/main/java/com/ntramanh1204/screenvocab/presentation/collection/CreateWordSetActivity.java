@@ -85,7 +85,10 @@ public class CreateWordSetActivity extends AppCompatActivity {
         });
 
         // Sự kiện lưu set
-        findViewById(R.id.btn_save).setOnClickListener(v -> viewModel.saveWordSet());
+        findViewById(R.id.btn_save).setOnClickListener(v -> {
+            viewModel.saveWordSet();
+            finish();
+        });
 
         // Xử lý sửa/xóa từ trong adapter
         wordItemAdapter.setOnWordChangedListener((position, wordItem) ->
