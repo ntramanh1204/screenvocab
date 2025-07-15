@@ -4,9 +4,11 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.ntramanh1204.screenvocab.data.local.entities.CollectionEntity;
+import com.ntramanh1204.screenvocab.data.local.entities.CollectionWithWords;
 
 import java.util.List;
 
@@ -27,5 +29,9 @@ public interface CollectionDao {
     Single<List<CollectionEntity>> getPendingCollections();
     @Query("SELECT * FROM collections WHERE collectionId = :collectionId")
     Single<CollectionEntity> getCollectionById(String collectionId);
+
+    @Transaction
+    @Query("SELECT * FROM collections WHERE collectionId = :collectionId")
+    Single<CollectionWithWords> getCollectionWithWordsById(String collectionId);
 
 }

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverter;
 
 @Entity(tableName = "wallpapers")
 public class WallpaperEntity {
@@ -42,7 +43,6 @@ public class WallpaperEntity {
         this.format = format;
         this.fileSize = fileSize;
     }
-
     @NonNull
     public String getWallpaperId() {
         return wallpaperId;

@@ -66,6 +66,8 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxjava:3.1.8'
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
 
+    implementation 'com.google.code.gson:gson:2.10.1'
+
     // Fragment and Activity - FORCE older compatible versions
     implementation 'androidx.fragment:fragment:1.5.7'
     implementation 'androidx.activity:activity:1.7.2'

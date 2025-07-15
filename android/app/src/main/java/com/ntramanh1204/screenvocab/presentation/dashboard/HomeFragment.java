@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ntramanh1204.screenvocab.R;
 import com.ntramanh1204.screenvocab.core.di.AppContainer;
+import com.ntramanh1204.screenvocab.presentation.theme.ThemeSelectionActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,18 +121,20 @@ public class HomeFragment extends Fragment implements WallpaperGridAdapter.OnWal
 
     private void showCreateWallpaperFlow() {
         if (!isAdded()) return;
-        if (isGuest() && hasCreatedWallpaper()) {
-            Toast.makeText(getContext(), "Please sign up to create more wallpapers", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        // TODO: mở comment phần này sau khi implement user func
+//        if (isGuest() && hasCreatedWallpaper()) {
+//            Toast.makeText(getContext(), "Please sign up to create more wallpapers", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
         // Logic tạo wallpaper
-        Toast.makeText(getContext(), "Create Wallpaper - Navigate to Theme Selection", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getContext(), "Create Wallpaper - Navigate to Theme Selection", Toast.LENGTH_SHORT).show();
         // Logic tạo wallpaper
 //        String collectionId = getArguments() != null ? getArguments().getString("guestCollectionId", "default_collection") : "default_collection";
         // chua co WallpaperGeneratorActivity; de sau
 //        Intent intent = new Intent(getContext(), WallpaperGeneratorActivity.class); // Giả định có activity này
 //        intent.putExtra("collectionId", collectionId);
-//        startActivity(intent);
+        Intent intent = new Intent(getContext(), ThemeSelectionActivity.class);
+        startActivity(intent);
     }
 
     private boolean isGuest() {
@@ -172,18 +175,18 @@ public class HomeFragment extends Fragment implements WallpaperGridAdapter.OnWal
     }
 
     public interface OnNavigateToWordSetsListener {
-    void onNavigateToWordSets();
-}
-
-private OnNavigateToWordSetsListener navigateListener;
-
-@Override
-public void onAttach(@NonNull Context context) {
-    super.onAttach(context);
-    if (context instanceof OnNavigateToWordSetsListener) {
-        navigateListener = (OnNavigateToWordSetsListener) context;
+        void onNavigateToWordSets();
     }
-}
+
+    private OnNavigateToWordSetsListener navigateListener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof OnNavigateToWordSetsListener) {
+            navigateListener = (OnNavigateToWordSetsListener) context;
+        }
+    }
 
     private void navigateToWordSetsTab() {
         if (!isAdded()) return;
@@ -192,8 +195,9 @@ public void onAttach(@NonNull Context context) {
         if (navigateListener != null) {
             navigateListener.onNavigateToWordSets();
         }
-        
+
     }
+
     @Override
     public void onDetach() {
         super.onDetach();

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="16dp">
+
+    <!-- Back button -->
+    <ImageView
+        android:id="@+id/btn_back"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_arrow_back"
+        app:tint="@android:color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Preview"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/noto_sans_bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_back"
+        app:layout_constraintEnd_toStartOf="@id/btn_finish"
+        app:layout_constraintHorizontal_bias="0.5" />
+
+    <!-- Finish button -->
+    <TextView
+        android:id="@+id/btn_finish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Finish"
+        android:textColor="@color/red"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/noto_sans_medium"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Preview Card -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_preview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/gray_light"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintDimensionRatio="9:19.5">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Title and Description Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:id="@+id/tv_set_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="N4\nVOCAB"
+                    android:textColor="@android:color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/noto_sans_bold"
+                    android:layout_gravity="center_vertical"
+                    android:lineSpacingExtra="2dp"
+                    android:layout_marginEnd="16dp" />
+
+                <TextView
+                    android:id="@+id/tv_set_desc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="A realistic mix of N4 vocabulary with varying lengths."
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/noto_sans_regular"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:lineSpacingExtra="2dp" />
+            </LinearLayout>
+
+            <!-- Grid of vocab items -->
+            <GridLayout
+                android:id="@+id/grid_vocab"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:columnCount="3"
+                android:rowCount="5"
+                android:alignmentMode="alignMargins"
+                android:useDefaultMargins="true"
+                android:gravity="center" >
+
+                <!-- Example vocab item -->
+                <!-- Repeat these blocks dynamically in code -->
+                <!-- <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@color/white"
+                    android:padding="8dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:elevation="1dp"
+                    android:layout_margin="4dp">
+
+                    <TextView
+                        android:id="@+id/tv_vocab_word"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="天気"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/noto_sans_bold" />
+
+                    <TextView
+                        android:id="@+id/tv_vocab_pron"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="てんき"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="13sp"
+                        android:fontFamily="@font/noto_sans_regular" />
+
+                    <TextView
+                        android:id="@+id/tv_vocab_meaning"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="weather"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="13sp"
+                        android:fontFamily="@font/noto_sans_regular" />
+                </LinearLayout> -->
+                <!-- ...repeat for each vocab item... -->
+
+            </GridLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

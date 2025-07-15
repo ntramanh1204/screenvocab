@@ -22,9 +22,15 @@ import com.ntramanh1204.screenvocab.domain.usecase.auth.LoginUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.auth.SignUpUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.collection.CreateCollectionUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.collection.DeleteCollectionUseCase;
+import com.ntramanh1204.screenvocab.domain.usecase.collection.GetCollectionByIdUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.collection.GetCollectionDetailUseCase;
+import com.ntramanh1204.screenvocab.domain.usecase.collection.GetCollectionWithWordsByIdUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.collection.GetCollectionsByUserUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.collection.UpdateCollectionUseCase;
+import com.ntramanh1204.screenvocab.domain.usecase.wallpaper.DeleteWallpaperUseCase;
+import com.ntramanh1204.screenvocab.domain.usecase.wallpaper.GetWallpapersByCollectionUseCase;
+import com.ntramanh1204.screenvocab.domain.usecase.wallpaper.SaveWallpaperUseCase;
+import com.ntramanh1204.screenvocab.domain.usecase.wallpaper.UpdateWallpaperUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.word.CreateWordUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.word.DeleteWordUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.word.GetWordsByCollectionUseCase;
@@ -63,6 +69,13 @@ public class AppContainer {
     private DeleteCollectionUseCase deleteCollectionUseCase;
     private GetCollectionsByUserUseCase getCollectionsByUserUseCase;
     private GetCollectionDetailUseCase getCollectionDetailUseCase;
+    private GetCollectionByIdUseCase getCollectionByIdUseCase;
+    private GetCollectionWithWordsByIdUseCase getCollectionWithWordsByIdUseCase;
+    private GetWallpapersByCollectionUseCase getWallpapersByCollectionUseCase;
+    private SaveWallpaperUseCase saveWallpaperUseCase;
+    private UpdateWallpaperUseCase updateWallpaperUseCase;
+    private DeleteWallpaperUseCase deleteWallpaperUseCase;
+
 
     // Mappers
     private UserMapper userMapper;
@@ -128,6 +141,14 @@ public class AppContainer {
         deleteCollectionUseCase = new DeleteCollectionUseCase(collectionRepository, wordRepository);
         getCollectionsByUserUseCase = new GetCollectionsByUserUseCase(collectionRepository);
         getCollectionDetailUseCase = new GetCollectionDetailUseCase(collectionRepository);
+        getCollectionByIdUseCase = new GetCollectionByIdUseCase(collectionRepository);
+        getCollectionWithWordsByIdUseCase = new GetCollectionWithWordsByIdUseCase(collectionRepository);
+
+        getWallpapersByCollectionUseCase = new GetWallpapersByCollectionUseCase(wallpaperRepository);
+        saveWallpaperUseCase = new SaveWallpaperUseCase(wallpaperRepository);
+        updateWallpaperUseCase = new UpdateWallpaperUseCase(wallpaperRepository);
+        deleteWallpaperUseCase = new DeleteWallpaperUseCase(wallpaperRepository);
+
 
     }
 
@@ -146,6 +167,25 @@ public class AppContainer {
     public DeleteCollectionUseCase getDeleteCollectionUseCase() { return deleteCollectionUseCase; }
     public GetCollectionsByUserUseCase getGetCollectionsByUserUseCase() { return getCollectionsByUserUseCase; }
     public GetCollectionDetailUseCase getGetCollectionDetailUseCase() { return getCollectionDetailUseCase; }
+    public GetCollectionByIdUseCase getGetCollectionByIdUseCase() { return getCollectionByIdUseCase; }
+    public GetCollectionWithWordsByIdUseCase getGetCollectionWithWordsByIdUseCase() { return getCollectionWithWordsByIdUseCase; }
+
+    public GetWallpapersByCollectionUseCase getGetWallpapersByCollectionUseCase() {
+        return getWallpapersByCollectionUseCase;
+    }
+
+    public SaveWallpaperUseCase getSaveWallpaperUseCase() {
+        return saveWallpaperUseCase;
+    }
+
+    public UpdateWallpaperUseCase getUpdateWallpaperUseCase() {
+        return updateWallpaperUseCase;
+    }
+
+    public DeleteWallpaperUseCase getDeleteWallpaperUseCase() {
+        return deleteWallpaperUseCase;
+    }
+
 
     public AuthRepository getAuthRepository() { return authRepository; }
     public UserRepository getUserRepository() { return userRepository; }

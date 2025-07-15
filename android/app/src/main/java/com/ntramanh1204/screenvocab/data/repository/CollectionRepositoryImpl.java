@@ -2,6 +2,9 @@ package com.ntramanh1204.screenvocab.data.repository;
 
 import com.ntramanh1204.screenvocab.data.local.dao.CollectionDao;
 import com.ntramanh1204.screenvocab.data.local.entities.CollectionEntity;
+import com.ntramanh1204.screenvocab.data.local.entities.CollectionWithWords;
+import com.ntramanh1204.screenvocab.data.mapper.CollectionMapper;
+import com.ntramanh1204.screenvocab.domain.model.Collection;
 import com.ntramanh1204.screenvocab.domain.repository.CollectionRepository;
 
 import java.util.List;
@@ -35,4 +38,11 @@ public class CollectionRepositoryImpl implements CollectionRepository {
     public Single<CollectionEntity> getCollectionById(String collectionId) {
         return collectionDao.getCollectionById(collectionId);
     }
+
+    @Override
+    public Single<Collection> getCollectionWithWordsById(String id) {
+        return collectionDao.getCollectionWithWordsById(id)
+                .map((CollectionWithWords cww) -> CollectionMapper.toDomain(cww)); // Ép kiểu rõ ràng
+    }
+
 }

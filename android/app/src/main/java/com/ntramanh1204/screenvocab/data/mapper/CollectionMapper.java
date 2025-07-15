@@ -1,9 +1,15 @@
 package com.ntramanh1204.screenvocab.data.mapper;
 
 import com.ntramanh1204.screenvocab.data.local.entities.CollectionEntity;
+import com.ntramanh1204.screenvocab.data.local.entities.CollectionWithWords;
+import com.ntramanh1204.screenvocab.data.local.entities.WordEntity;
 import com.ntramanh1204.screenvocab.domain.model.Collection;
+import com.ntramanh1204.screenvocab.domain.model.Word;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class CollectionMapper {
     public static CollectionEntity toEntity(Collection collection) {
@@ -29,5 +35,25 @@ public class CollectionMapper {
                 entity.getUserId(),
                 new ArrayList<>(),
                 entity.isPublic());
+    }
+
+    public static Collection toDomain(CollectionWithWords cww) {
+        List<Word> wordList = new ArrayList<>();
+        if (cww.words != null) {
+            for (WordEntity we : cww.words) {
+                wordList.add(WordMapper.toDomain(we));
+            }
+        }
+
+        return new Collection(
+                cww.collection.getCollectionId(),
+                cww.collection.getName(),
+                cww.collection.getDescription(),
+                cww.collection.getCreatedAt(),
+                cww.collection.getUpdatedAt(),
+                cww.collection.getUserId(),
+                wordList,
+                cww.collection.isPublic()
+        );
     }
 }

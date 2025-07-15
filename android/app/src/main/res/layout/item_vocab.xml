@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:padding="8dp"
+    android:layout_columnWeight="1"
+    android:layout_rowWeight="1"
+    android:elevation="1dp"
+    android:layout_margin="4dp">
+
+    <TextView
+        android:id="@+id/tv_vocab_word"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="語彙"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:id="@+id/tv_vocab_pron"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ごい"
+        android:textSize="13sp"
+        android:textColor="@android:color/darker_gray" />
+
+    <TextView
+        android:id="@+id/tv_vocab_meaning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="vocabulary"
+        android:textSize="13sp"
+        android:textColor="@android:color/darker_gray" />
+</LinearLayout>
