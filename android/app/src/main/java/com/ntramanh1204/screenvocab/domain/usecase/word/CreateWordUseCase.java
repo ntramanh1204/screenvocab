@@ -3,7 +3,6 @@ package com.ntramanh1204.screenvocab.domain.usecase.word;
 import com.ntramanh1204.screenvocab.domain.model.Word;
 import com.ntramanh1204.screenvocab.domain.repository.WordRepository;
 import com.ntramanh1204.screenvocab.domain.repository.CollectionRepository;
-import com.ntramanh1204.screenvocab.data.mapper.WordMapper;
 import com.ntramanh1204.screenvocab.core.utils.ValidationUtils;
 
 import io.reactivex.rxjava3.core.Single;
@@ -19,34 +18,43 @@ public class CreateWordUseCase {
         this.collectionRepository = collectionRepository;
     }
 
-    // Input parameters for creating a word
     public static class Params {
-        private final String primaryText;
-        private final String secondaryText;
-        private final String tertiaryText;
+        private final String term;
+        private final String pronunciation;
+        private final String definition;
         private final String language;
         private final String collectionId;
         private final String userId;
 
-        public Params(String primaryText, String secondaryText, String tertiaryText,
+        public static Params of(Word word, String userId) {
+            return new Params(
+                    word.getTerm(),
+                    word.getPronunciation(),
+                    word.getDefinition(),
+                    word.getLanguage(),
+                    word.getCollectionId(),
+                    userId
+            );
+        }
+        public Params(String term, String pronunciation, String definition,
                       String language, String collectionId, String userId) {
-            this.primaryText = primaryText;
-            this.secondaryText = secondaryText;
-            this.tertiaryText = tertiaryText;
+            this.term = term;
+            this.pronunciation = pronunciation;
+            this.definition = definition;
             this.language = language;
             this.collectionId = collectionId;
             this.userId = userId;
         }
 
-        public String getPrimaryText() { return primaryText; }
-        public String getSecondaryText() { return secondaryText; }
-        public String getTertiaryText() { return tertiaryText; }
+        // getters
+        public String getTerm() { return term; }
+        public String getPronunciation() { return pronunciation; }
+        public String getDefinition() { return definition; }
         public String getLanguage() { return language; }
         public String getCollectionId() { return collectionId; }
         public String getUserId() { return userId; }
     }
 
-    // Execute use case - REQ-VOCAB-001, REQ-VOCAB-007
     public Single<Word> execute(Params params) {
         return validateInput(params)
                 .andThen(checkCollectionExists(params.getCollectionId(), params.getUserId()))
@@ -55,13 +63,12 @@ public class CreateWordUseCase {
                 .andThen(createAndSaveWord(params));
     }
 
-    // Validate input parameters - REQ-VOCAB-007
     private Completable validateInput(Params params) {
         return Completable.fromAction(() -> {
-            if (ValidationUtils.isEmpty(params.getPrimaryText())) {
+            if (ValidationUtils.isEmpty(params.getTerm())) {
                 throw new IllegalArgumentException("Primary text cannot be empty");
             }
-            if (ValidationUtils.isEmpty(params.getSecondaryText())) {
+            if (ValidationUtils.isEmpty(params.getPronunciation())) {
                 throw new IllegalArgumentException("Secondary text cannot be empty");
             }
             if (ValidationUtils.isEmpty(params.getLanguage())) {
@@ -73,75 +80,68 @@ public class CreateWordUseCase {
             if (ValidationUtils.isEmpty(params.getUserId())) {
                 throw new IllegalArgumentException("User ID cannot be empty");
             }
-
-            // Length validation
-            if (params.getPrimaryText().length() > 100) {
-                throw new IllegalArgumentException("Primary text is too long (max 100 characters)");
+            if (params.getTerm().length() > 100) {
+                throw new IllegalArgumentException("Term text is too long (max 100 chars)");
             }
-            if (params.getSecondaryText().length() > 100) {
-                throw new IllegalArgumentException("Secondary text is too long (max 100 characters)");
+            if (params.getPronunciation().length() > 100) {
+                throw new IllegalArgumentException("Pronunciation text is too long (max 100 chars)");
             }
-            if (params.getTertiaryText() != null && params.getTertiaryText().length() > 100) {
-                throw new IllegalArgumentException("Tertiary text is too long (max 100 characters)");
+            if (params.getDefinition() != null && params.getDefinition().length() > 100) {
+                throw new IllegalArgumentException("Definition text is too long (max 100 chars)");
             }
         });
     }
 
-    // Check if collection exists and belongs to user
     private Completable checkCollectionExists(String collectionId, String userId) {
         return collectionRepository.getCollectionsByUser(userId)
                 .flatMapCompletable(collections -> {
-                    boolean collectionExists = collections.stream()
-                            .anyMatch(collection -> collection.getCollectionId().equals(collectionId));
-
-                    if (!collectionExists) {
+                    boolean exists = collections.stream()
+                            .anyMatch(c -> c.getCollectionId().equals(collectionId));
+                    if (!exists) {
                         return Completable.error(new IllegalArgumentException("Collection not found or does not belong to user"));
                     }
                     return Completable.complete();
                 });
     }
 
-    // Check collection size limit - REQ-VOCAB-003 (max 150 words)
     private Completable checkCollectionSize(String collectionId) {
         return wordRepository.getWordsByCollection(collectionId)
                 .flatMapCompletable(words -> {
                     if (words.size() >= 150) {
-                        return Completable.error(new IllegalStateException("Collection has reached maximum limit of 150 words"));
+                        return Completable.error(new IllegalStateException("Collection reached max 150 words"));
                     }
                     return Completable.complete();
                 });
     }
 
-    // Check for duplicate words in collection - REQ-VOCAB-007
     private Completable checkDuplicateWord(Params params) {
         return wordRepository.getWordsByCollection(params.getCollectionId())
                 .flatMapCompletable(words -> {
-                    boolean hasDuplicate = words.stream()
-                            .anyMatch(wordEntity ->
-                                    wordEntity.getPrimaryText().equalsIgnoreCase(params.getPrimaryText().trim()) &&
-                                            wordEntity.getSecondaryText().equalsIgnoreCase(params.getSecondaryText().trim())
+                    boolean duplicate = words.stream()
+                            .anyMatch(w ->
+                                    w.getTerm().equalsIgnoreCase(params.getTerm().trim()) &&
+                                            w.getPronunciation().equalsIgnoreCase(params.getPronunciation().trim())
                             );
-                    if (hasDuplicate) {
+                    if (duplicate) {
                         return Completable.error(new IllegalArgumentException("Word already exists in collection"));
                     }
                     return Completable.complete();
                 });
     }
 
-    // Create and save word
     private Single<Word> createAndSaveWord(Params params) {
         return wordRepository.getWordsByCollection(params.getCollectionId())
-                .map(words -> words.size())
-                .flatMap(nextPosition -> {
+                .map(words -> words.size()) // vị trí mới = size hiện tại
+                .flatMap(position -> {
                     Word newWord = Word.create(
-                            params.getPrimaryText().trim(),
-                            params.getSecondaryText().trim(),
-                            params.getTertiaryText() != null ? params.getTertiaryText().trim() : null,
+                            params.getTerm().trim(),
+                            params.getPronunciation().trim(),
+                            params.getDefinition() != null ? params.getDefinition().trim() : null,
                             params.getLanguage().trim(),
-                            nextPosition,
+                            position,
                             params.getCollectionId()
                     );
-                    return wordRepository.insertWord(WordMapper.toEntity(newWord))
+                    return wordRepository.insertWord(newWord)
                             .andThen(Single.just(newWord));
                 });
     }

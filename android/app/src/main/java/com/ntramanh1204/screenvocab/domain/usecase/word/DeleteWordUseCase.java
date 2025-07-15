@@ -16,6 +16,7 @@ public class DeleteWordUseCase {
 
     public Completable execute(Word word) {
         if (word == null) return Completable.error(new IllegalArgumentException("Word cannot be null"));
-        return wordRepository.deleteWord(WordMapper.toEntity(word));
+//        return wordRepository.deleteWord(WordMapper.toEntity(word));
+        return wordRepository.deleteWord(word);
     }
 }

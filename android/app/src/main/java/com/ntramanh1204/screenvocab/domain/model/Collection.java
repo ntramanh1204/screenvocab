@@ -8,30 +8,38 @@ import java.util.UUID;
 public class Collection {
     private final String collectionId;
     private final String name;
+    private final String description;
     private final long createdAt;
     private final long updatedAt;
     private final String userId;
     private final List<Word> words;
+    private final boolean isPublic;
 
-    public Collection(String collectionId, String name, long createdAt, long updatedAt,
-                      String userId, List<Word> words) {
+    public Collection(String collectionId, String name, String description, long createdAt, long updatedAt,
+                      String userId, List<Word> words, boolean isPublic) {
         this.collectionId = collectionId;
         this.name = name;
+        this.description = description;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.userId = userId;
         this.words = words != null ? new ArrayList<>(words) : new ArrayList<>();
+        this.isPublic = isPublic;
     }
 
+
     // Factory method for creating new collections
-    public static Collection create(String name, String userId) {
+    public static Collection create(String name, String description, String userId) {
         return new Collection(
                 UUID.randomUUID().toString(),
                 name,
+//                "", // description mặc định rỗng
+                description,
                 System.currentTimeMillis(),
                 System.currentTimeMillis(),
                 userId,
-                new ArrayList<>()
+                new ArrayList<>(),
+                false
         );
     }
 
@@ -40,10 +48,12 @@ public class Collection {
         return new Collection(
                 this.collectionId,
                 newName,
+                this.description,
                 this.createdAt,
                 System.currentTimeMillis(),
                 this.userId,
-                this.words
+                this.words,
+                this.isPublic
         );
     }
 
@@ -52,16 +62,20 @@ public class Collection {
         return new Collection(
                 this.collectionId,
                 this.name,
+                this.description,
                 this.createdAt,
                 System.currentTimeMillis(),
                 this.userId,
-                newWords
+                newWords,
+                this.isPublic
         );
     }
 
     // Getters
     public String getCollectionId() { return collectionId; }
     public String getName() { return name; }
+    public String getDescription() { return description; }
+
     public long getCreatedAt() { return createdAt; }
     public long getUpdatedAt() { return updatedAt; }
     public String getUserId() { return userId; }
@@ -75,6 +89,8 @@ public class Collection {
     public int getWordCount() {
         return words.size();
     }
+
+    public boolean isPublic() { return isPublic; }
 
     public boolean isEmpty() {
         return words.isEmpty();
@@ -120,10 +136,10 @@ public class Collection {
         return getWordCount() + " words • " + getPrimaryLanguage().toUpperCase();
     }
 
-    public boolean containsWord(String primaryText, String secondaryText) {
+    public boolean containsWord(String term, String pronunciation) {
         return words.stream().anyMatch(word ->
-                word.getPrimaryText().equalsIgnoreCase(primaryText) &&
-                        word.getSecondaryText().equalsIgnoreCase(secondaryText)
+                word.getTerm().equalsIgnoreCase(term) &&
+                        word.getPronunciation().equalsIgnoreCase(pronunciation)
         );
     }
 

@@ -69,6 +69,20 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />
 
+        <!-- Word Set Edit Activity -->
+        <activity
+            android:name=".presentation.collection.WordSetEditActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Word Set Detail Activity -->
+        <activity
+            android:name=".presentation.collection.WordSetDetailActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize" />
+
     </application>
 
 </manifest>

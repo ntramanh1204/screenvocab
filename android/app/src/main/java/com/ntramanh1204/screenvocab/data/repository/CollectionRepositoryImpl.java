@@ -30,4 +30,9 @@ public class CollectionRepositoryImpl implements CollectionRepository {
     public Single<List<CollectionEntity>> getCollectionsByUser(String userId) {
         return collectionDao.getCollectionsByUser(userId);
     }
+
+    @Override
+    public Single<CollectionEntity> getCollectionById(String collectionId) {
+        return collectionDao.getCollectionById(collectionId);
+    }
 }

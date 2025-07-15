@@ -5,17 +5,20 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
 import com.ntramanh1204.screenvocab.domain.model.Collection;
 import com.ntramanh1204.screenvocab.domain.usecase.collection.GetCollectionsByUserUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.collection.DeleteCollectionUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.collection.UpdateCollectionUseCase;
 import com.ntramanh1204.screenvocab.domain.repository.AuthRepository;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class WordSetListViewModel extends ViewModel {
     private final GetCollectionsByUserUseCase getCollectionsByUserUseCase;
@@ -26,13 +29,18 @@ public class WordSetListViewModel extends ViewModel {
 
     private final MutableLiveData<List<Collection>> _collections = new MutableLiveData<>(new ArrayList<>());
     public final LiveData<List<Collection>> collections = _collections;
+
     private final MutableLiveData<List<Collection>> _originalCollections = new MutableLiveData<>(new ArrayList<>());
+
     private final MutableLiveData<Boolean> _isLoading = new MutableLiveData<>(false);
     public final LiveData<Boolean> isLoading = _isLoading;
+
     private final MutableLiveData<String> _error = new MutableLiveData<>();
     public final LiveData<String> error = _error;
+
     private final MutableLiveData<Boolean> _isEmpty = new MutableLiveData<>(true);
     public final LiveData<Boolean> isEmpty = _isEmpty;
+
     private final MutableLiveData<String> _searchQuery = new MutableLiveData<>("");
     public final LiveData<String> searchQuery = _searchQuery;
 
@@ -51,12 +59,14 @@ public class WordSetListViewModel extends ViewModel {
     public void loadCollections() {
         _isLoading.setValue(true);
         _error.setValue(null);
+
         String currentUserId = getCurrentUserId();
         if (currentUserId == null) {
             _error.setValue("User not authenticated");
             _isLoading.setValue(false);
             return;
         }
+
         compositeDisposable.add(
                 getCollectionsByUserUseCase.execute(currentUserId)
                         .subscribeOn(Schedulers.io())
@@ -84,8 +94,6 @@ public class WordSetListViewModel extends ViewModel {
                                 }
                         )
         );
-
-
     }
 
     public void searchCollections(String query) {
@@ -111,11 +119,28 @@ public class WordSetListViewModel extends ViewModel {
         _isEmpty.setValue(filteredCollections.isEmpty());
     }
 
+    private Collection findCollectionById(String collectionId) {
+        List<Collection> currentCollections = _collections.getValue();
+        if (currentCollections == null) return null;
+        for (Collection c : currentCollections) {
+            if (c.getCollectionId().equals(collectionId)) {
+                return c;
+            }
+        }
+        return null;
+    }
+
     public void deleteCollection(String collectionId) {
+        Collection current = findCollectionById(collectionId);
+        if (current == null) {
+            _error.setValue("Collection not found");
+            return;
+        }
         _isLoading.setValue(true);
         _error.setValue(null);
+
         compositeDisposable.add(
-                deleteCollectionUseCase.execute(new Collection(collectionId, null, 0, 0, null, null))
+                deleteCollectionUseCase.execute(current)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
@@ -132,10 +157,18 @@ public class WordSetListViewModel extends ViewModel {
     }
 
     public void updateCollection(String collectionId, String newName) {
+        Collection current = findCollectionById(collectionId);
+        if (current == null) {
+            _error.setValue("Collection not found");
+            return;
+        }
         _isLoading.setValue(true);
         _error.setValue(null);
+
+        Collection updatedCollection = current.updateName(newName);
+
         compositeDisposable.add(
-                updateCollectionUseCase.execute(new Collection(collectionId, newName, 0, System.currentTimeMillis(), getCurrentUserId(), null))
+                updateCollectionUseCase.execute(updatedCollection)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(

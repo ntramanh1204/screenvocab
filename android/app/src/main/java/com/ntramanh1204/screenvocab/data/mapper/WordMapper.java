@@ -13,9 +13,9 @@ public class WordMapper {
 
         return new WordEntity(
                 word.getWordId(),
-                word.getPrimaryText(),
-                word.getSecondaryText(),
-                word.getTertiaryText(),
+                word.getTerm(),
+                word.getPronunciation(),
+                word.getDefinition(),
                 word.getLanguage(),
                 word.getPosition(),
                 word.getCreatedAt(),
@@ -33,9 +33,9 @@ public class WordMapper {
 
         return new Word(
                 entity.getWordId(),
-                entity.getPrimaryText(),
-                entity.getSecondaryText(),
-                entity.getTertiaryText(),
+                entity.getTerm(),
+                entity.getPronunciation(),
+                entity.getDefinition(),
                 entity.getLanguage(),
                 entity.getPosition(),
                 entity.getCreatedAt(),

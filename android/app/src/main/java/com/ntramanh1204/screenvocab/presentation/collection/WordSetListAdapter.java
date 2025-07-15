@@ -32,8 +32,6 @@ public class WordSetListAdapter extends ListAdapter<Collection, WordSetListAdapt
     @NonNull
     @Override
     public SetViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Log.d("Adapter", "onCreateViewHolder");
-        Log.d("Adapter", "hehehehehehe");
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_wordset_list, parent, false);
         return new SetViewHolder(v);
     }
@@ -42,14 +40,13 @@ public class WordSetListAdapter extends ListAdapter<Collection, WordSetListAdapt
     public void onBindViewHolder(@NonNull SetViewHolder holder, int position) {
         Collection item = getItem(position);
         holder.tvSetName.setText(item.getName());
-        TextView tvTermCount = holder.itemView.findViewById(R.id.tv_term_count);
-        tvTermCount.setText(item.getWordCount() + " terms");
+//        TextView tvTermCount = holder.itemView.findViewById(R.id.tv_term_count);
+//        tvTermCount.setText(item.getWordCount() + " terms");
+        holder.tvTermCount.setText(item.getWordCount() + " terms");
 
         holder.itemView.setOnClickListener(v -> {
             if (onItemClick != null) onItemClick.accept(item);
         });
-
-        Log.d("Adapter", "Binding item: " + item.getName());
 
     }
 
@@ -59,11 +56,11 @@ public class WordSetListAdapter extends ListAdapter<Collection, WordSetListAdapt
 
     static class SetViewHolder extends RecyclerView.ViewHolder {
         TextView tvSetName;
-//        TextView tvTermCount;
+        TextView tvTermCount;
         SetViewHolder(@NonNull View itemView) {
             super(itemView);
             tvSetName = itemView.findViewById(R.id.tv_set_name);
-//            tvTermCount = itemView.findViewById(R.id.tv_term_count);
+            tvTermCount = itemView.findViewById(R.id.tv_term_count);
         }
     }
 }

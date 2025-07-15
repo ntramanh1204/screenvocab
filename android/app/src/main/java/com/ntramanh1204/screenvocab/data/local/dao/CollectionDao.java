@@ -25,5 +25,7 @@ public interface CollectionDao {
     Single<List<CollectionEntity>> getCollectionsByUser(String userId);
     @Query("SELECT * FROM collections WHERE syncStatus = 'PENDING'")
     Single<List<CollectionEntity>> getPendingCollections();
+    @Query("SELECT * FROM collections WHERE collectionId = :collectionId")
+    Single<CollectionEntity> getCollectionById(String collectionId);
 
 }

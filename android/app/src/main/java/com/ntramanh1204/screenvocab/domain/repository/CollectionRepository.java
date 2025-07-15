@@ -10,4 +10,5 @@ public interface CollectionRepository {
     Completable updateCollection(CollectionEntity collection);
     Completable deleteCollection(CollectionEntity collection);
     Single<List<CollectionEntity>> getCollectionsByUser(String userId);
+    Single<CollectionEntity> getCollectionById(String collectionId);
 }

@@ -21,7 +21,7 @@ public interface WordDao {
     Completable update(WordEntity word);
     @Delete
     Completable delete(WordEntity word);
-    @Query("SELECT * FROM words WHERE collectionId = :collectionId")
+    @Query("SELECT * FROM words WHERE collectionId = :collectionId ORDER BY createdAt DESC")
     Single<List<WordEntity>> getWordsByCollection(String collectionId);
     @Query("SELECT * FROM words WHERE syncStatus = 'PENDING'")
     Single<List<WordEntity>> getPendingWords();

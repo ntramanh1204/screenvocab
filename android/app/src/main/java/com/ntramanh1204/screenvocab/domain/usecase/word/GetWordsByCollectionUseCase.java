@@ -18,10 +18,6 @@ public class GetWordsByCollectionUseCase {
     }
 
     public Single<List<Word>> execute(String collectionId) {
-        return wordRepository.getWordsByCollection(collectionId)
-                .map(wordEntities -> wordEntities.stream()
-                        .map(WordMapper::toDomain)
-                        .collect(Collectors.toList())
-                );
+        return wordRepository.getWordsByCollection(collectionId);
     }
 }

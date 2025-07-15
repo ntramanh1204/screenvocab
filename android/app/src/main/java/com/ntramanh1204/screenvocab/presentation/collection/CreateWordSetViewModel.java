@@ -80,7 +80,7 @@ public class CreateWordSetViewModel extends ViewModel {
     private static final int MIN_WORDS_REQUIRED = 2;
     private static final int MAX_WORDS_ALLOWED = 150; // From SRS requirements
 
-//    // Data class for word item
+    //    // Data class for word item
 //    public static class WordItem {
 //        private String term;
 //        private String pronunciation;
@@ -203,7 +203,11 @@ public class CreateWordSetViewModel extends ViewModel {
             return;
         }
         CreateCollectionUseCase.Params params = new CreateCollectionUseCase.Params(
-                _title.getValue().trim(), currentUserId);
+                _title.getValue().trim(),
+                _description.getValue() != null ? _description.getValue().trim() : "",
+                currentUserId
+        );
+
         Log.d("SaveWordSet", "Saving collection: " + _title.getValue() + ", words: " + getValidWords().size());
         compositeDisposable.add(
                 createCollectionUseCase.execute(params)
@@ -260,6 +264,7 @@ public class CreateWordSetViewModel extends ViewModel {
                 })
                 .andThen(Single.just(collection)); // Không xóa collection nếu thất bại
     }
+
     private List<WordItem> getValidWords() {
         List<WordItem> currentWords = _words.getValue();
         if (currentWords == null) {

@@ -88,7 +88,10 @@ public class WordSetListFragment extends Fragment {
 
         // Click item word set
         adapter.setOnItemClickListener(collection -> {
-            Toast.makeText(getContext(), "Chọn set: " + collection.getName(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), "Chọn set: " + collection.getName(), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(requireContext(), WordSetEditActivity.class);
+            intent.putExtra("collection_id", collection.getCollectionId());
+            startActivity(intent);
         });
 
 //        List<Collection> dummyList = new ArrayList<>();

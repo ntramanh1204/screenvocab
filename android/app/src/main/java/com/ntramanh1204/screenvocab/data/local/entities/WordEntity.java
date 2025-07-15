@@ -10,9 +10,9 @@ public class WordEntity {
     @PrimaryKey
     @NonNull
     public String wordId;
-    public String primaryText;
-    public String secondaryText;
-    public String tertiaryText;
+    public String term;
+    public String pronunciation;
+    public String definition;
     public String language;
     public int position;
     public long createdAt;
@@ -24,11 +24,11 @@ public class WordEntity {
     }
 
     @Ignore
-    public WordEntity(@NonNull String wordId, String primaryText, String secondaryText, String tertiaryText, String language, int position, long createdAt, String collectionId, String userId, String syncStatus) {
+    public WordEntity(@NonNull String wordId, String term, String pronunciation, String definition, String language, int position, long createdAt, String collectionId, String userId, String syncStatus) {
         this.wordId = wordId;
-        this.primaryText = primaryText;
-        this.secondaryText = secondaryText;
-        this.tertiaryText = tertiaryText;
+        this.term = term;
+        this.pronunciation = pronunciation;
+        this.definition = definition;
         this.language = language;
         this.position = position;
         this.createdAt = createdAt;
@@ -46,28 +46,28 @@ public class WordEntity {
         this.wordId = wordId;
     }
 
-    public String getPrimaryText() {
-        return primaryText;
+    public String getTerm() {
+        return term;
     }
 
-    public void setPrimaryText(String primaryText) {
-        this.primaryText = primaryText;
+    public void setTerm(String term) {
+        this.term = term;
     }
 
-    public String getSecondaryText() {
-        return secondaryText;
+    public String getPronunciation() {
+        return pronunciation;
     }
 
-    public void setSecondaryText(String secondaryText) {
-        this.secondaryText = secondaryText;
+    public void setPronunciation(String pronunciation) {
+        this.pronunciation = pronunciation;
     }
 
-    public String getTertiaryText() {
-        return tertiaryText;
+    public String getDefinition() {
+        return definition;
     }
 
-    public void setTertiaryText(String tertiaryText) {
-        this.tertiaryText = tertiaryText;
+    public void setDefinition(String definition) {
+        this.definition = definition;
     }
 
     public String getLanguage() {

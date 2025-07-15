@@ -10,10 +10,12 @@ public class CollectionMapper {
         return new CollectionEntity(
                 collection.getCollectionId(),
                 collection.getName(),
+                collection.getDescription(),
                 collection.getCreatedAt(),
                 collection.getUpdatedAt(),
                 collection.getUserId(),
-                "PENDING"
+                "PENDING",
+                collection.isPublic()
         );
     }
 
@@ -21,10 +23,11 @@ public class CollectionMapper {
         return new Collection(
                 entity.getCollectionId(),
                 entity.getName(),
+                entity.getDescription(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt(),
                 entity.getUserId(),
-                new ArrayList<>()
-        );
+                new ArrayList<>(),
+                entity.isPublic());
     }
 }

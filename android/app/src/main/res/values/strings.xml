@@ -61,5 +61,30 @@
 
     <string name="create_first_wallpaper">create first wallpaper</string>
     <string name="delete_word">Delete Word</string>
+    
+    <!-- Word Set Detail Screen -->
+    <string name="set_detail_title">Set Detail</string>
+    <string name="edit">Edit</string>
+    <string name="visibility_everyone">Visibility: Everyone</string>
+    <string name="visibility_only_me">Visibility: Only me</string>
+    <string name="no_words_in_set">No words in this set</string>
+    <string name="add_words_to_get_started">Add some words to get started</string>
+    <string name="more_options">More options</string>
+    <string name="terms_count">%d terms</string>
+    
+    <!-- Edit Set Screen -->
+    <string name="edit_set_title">Edit Set</string>
+    <string name="save">Save</string>
+    <string name="title_label">TITLE</string>
+    <string name="description_label">DESCRIPTION</string>
+    <string name="description_hint">Enter description...</string>
+    <string name="visibility_label">Visibility</string>
+    <string name="everyone">Everyone</string>
+    <string name="only_me">Only me</string>
+    <string name="delete_set">Delete Set</string>
+    <string name="term_label">TERM</string>
+    <string name="pronunciation_label">PRONOUNCE</string>
+    <string name="definition_label">DEFINITION</string>
+    <string name="add_field_hint">+ Field (for pronounce, pinyin, furigana..)</string>
 
 </resources>

@@ -22,6 +22,7 @@ import com.ntramanh1204.screenvocab.domain.usecase.auth.LoginUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.auth.SignUpUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.collection.CreateCollectionUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.collection.DeleteCollectionUseCase;
+import com.ntramanh1204.screenvocab.domain.usecase.collection.GetCollectionDetailUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.collection.GetCollectionsByUserUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.collection.UpdateCollectionUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.word.CreateWordUseCase;
@@ -61,6 +62,7 @@ public class AppContainer {
     private UpdateCollectionUseCase updateCollectionUseCase;
     private DeleteCollectionUseCase deleteCollectionUseCase;
     private GetCollectionsByUserUseCase getCollectionsByUserUseCase;
+    private GetCollectionDetailUseCase getCollectionDetailUseCase;
 
     // Mappers
     private UserMapper userMapper;
@@ -125,6 +127,7 @@ public class AppContainer {
         updateCollectionUseCase = new UpdateCollectionUseCase(collectionRepository);
         deleteCollectionUseCase = new DeleteCollectionUseCase(collectionRepository, wordRepository);
         getCollectionsByUserUseCase = new GetCollectionsByUserUseCase(collectionRepository);
+        getCollectionDetailUseCase = new GetCollectionDetailUseCase(collectionRepository);
 
     }
 
@@ -142,6 +145,7 @@ public class AppContainer {
     public UpdateCollectionUseCase getUpdateCollectionUseCase() { return updateCollectionUseCase; }
     public DeleteCollectionUseCase getDeleteCollectionUseCase() { return deleteCollectionUseCase; }
     public GetCollectionsByUserUseCase getGetCollectionsByUserUseCase() { return getCollectionsByUserUseCase; }
+    public GetCollectionDetailUseCase getGetCollectionDetailUseCase() { return getCollectionDetailUseCase; }
 
     public AuthRepository getAuthRepository() { return authRepository; }
     public UserRepository getUserRepository() { return userRepository; }

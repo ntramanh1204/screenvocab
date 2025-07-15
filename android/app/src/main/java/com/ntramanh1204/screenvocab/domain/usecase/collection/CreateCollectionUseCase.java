@@ -16,16 +16,20 @@ public class CreateCollectionUseCase {
         this.collectionRepository = collectionRepository;
     }
 
+    // Params class với thêm trường description
     public static class Params {
         private final String name;
+        private final String description;
         private final String userId;
 
-        public Params(String name, String userId) {
+        public Params(String name, String description, String userId) {
             this.name = name;
+            this.description = description;
             this.userId = userId;
         }
 
         public String getName() { return name; }
+        public String getDescription() { return description; }
         public String getUserId() { return userId; }
     }
 
@@ -46,6 +50,10 @@ public class CreateCollectionUseCase {
             if (params.getName().length() > 50) {
                 throw new IllegalArgumentException("Collection name is too long (max 50 characters)");
             }
+            // Bạn có thể thêm validate description nếu muốn, ví dụ:
+            // if (params.getDescription() != null && params.getDescription().length() > 200) {
+            //     throw new IllegalArgumentException("Description is too long (max 200 characters)");
+            // }
         });
     }
 
@@ -63,7 +71,7 @@ public class CreateCollectionUseCase {
 
     private Single<Collection> createAndSaveCollection(Params params) {
         return Single.fromCallable(() ->
-                Collection.create(params.getName().trim(), params.getUserId())
+                Collection.create(params.getName().trim(), params.getDescription(), params.getUserId())
         ).flatMap(collection ->
                 collectionRepository.insertCollection(CollectionMapper.toEntity(collection))
                         .andThen(Single.just(collection))
