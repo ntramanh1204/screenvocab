@@ -3,6 +3,9 @@ package com.ntramanh1204.screenvocab.presentation.dashboard;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import com.ntramanh1204.screenvocab.ScreenVocabApp;
+import com.ntramanh1204.screenvocab.core.di.AppContainer;
 import com.ntramanh1204.screenvocab.data.local.entities.WallpaperEntity;
 import com.ntramanh1204.screenvocab.domain.repository.AuthRepository;
 import com.ntramanh1204.screenvocab.domain.repository.CollectionRepository;
@@ -10,7 +13,10 @@ import com.ntramanh1204.screenvocab.domain.repository.WallpaperRepository;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class HomeViewModel extends ViewModel {
@@ -38,6 +44,9 @@ public class HomeViewModel extends ViewModel {
     public void loadData() {
         isLoading.setValue(true);
         error.setValue(null);
+
+        loadWallpapersFromDirectory(); // 👈 dùng logic không cần DB
+
         compositeDisposable.add(
                 authRepository.getCurrentUser()
                         .subscribeOn(Schedulers.io())
@@ -149,6 +158,28 @@ public class HomeViewModel extends ViewModel {
         );
 //        */
     }
+
+    private void loadWallpapersFromDirectory() {
+        File dir = new File(ScreenVocabApp.getInstance().getContext().getExternalFilesDir(null), "wallpapers");
+        if (dir.exists() && dir.isDirectory()) {
+            File[] files = dir.listFiles((file, name) -> name.endsWith(".png"));
+
+            List<String> paths = new ArrayList<>();
+            if (files != null) {
+                for (File file : files) {
+                    paths.add(file.getAbsolutePath());
+                }
+            }
+
+            // Sắp xếp theo ngày tạo (mới nhất lên trước)
+            Collections.sort(paths, (a, b) -> Long.compare(new File(b).lastModified(), new File(a).lastModified()));
+
+            wallpapers.setValue(paths);
+        } else {
+            wallpapers.setValue(new ArrayList<>());
+        }
+    }
+
 
     @Override
     protected void onCleared() {
