@@ -50,10 +50,6 @@ public class CreateCollectionUseCase {
             if (params.getName().length() > 50) {
                 throw new IllegalArgumentException("Collection name is too long (max 50 characters)");
             }
-            // Bạn có thể thêm validate description nếu muốn, ví dụ:
-            // if (params.getDescription() != null && params.getDescription().length() > 200) {
-            //     throw new IllegalArgumentException("Description is too long (max 200 characters)");
-            // }
         });
     }
 

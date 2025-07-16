@@ -1,7 +1,5 @@
 package com.ntramanh1204.screenvocab.core.utils;
 
-import android.util.Patterns;
-
 public class ValidationUtils {
     
     /**

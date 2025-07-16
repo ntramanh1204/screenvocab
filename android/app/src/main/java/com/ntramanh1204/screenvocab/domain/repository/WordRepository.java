@@ -1,6 +1,5 @@
 package com.ntramanh1204.screenvocab.domain.repository;
 
-import com.ntramanh1204.screenvocab.data.local.entities.WordEntity;
 import com.ntramanh1204.screenvocab.domain.model.Word;
 
 import java.util.List;

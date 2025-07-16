@@ -10,13 +10,11 @@ public interface AuthRepository {
     /**
      * Sign in with email and password
      */
-//    Single<FirebaseUser> signIn(String email, String password);
     Single<User> signIn(String email, String password);
 
     /**
      * Sign up with email and password
      */
-//    Single<FirebaseUser> signUp(String email, String password);
     Single<User> signUp(String email, String password);
 
     /**
@@ -27,7 +25,6 @@ public interface AuthRepository {
     /**
      * Get current authenticated user
      */
-//    Single<FirebaseUser> getCurrentUser();
     Single<User> getCurrentUser();
 
     /**
@@ -38,7 +35,6 @@ public interface AuthRepository {
     /**
      * Create user profile
      */
-//    Completable createUserProfile(UserEntity userEntity);
 
     // Thêm method này
     String getCurrentUserId(); // Synchronous method

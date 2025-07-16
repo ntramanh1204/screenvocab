@@ -94,9 +94,6 @@ public class WordSetListFragment extends Fragment {
             startActivity(intent);
         });
 
-//        List<Collection> dummyList = new ArrayList<>();
-//        dummyList.add(new Collection("1", "Dummy Set", 10, System.currentTimeMillis(), "uid", null));
-//        adapter.submitList(dummyList);
 
     }
 

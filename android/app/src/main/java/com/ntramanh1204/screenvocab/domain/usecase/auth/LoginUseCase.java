@@ -1,6 +1,5 @@
 package com.ntramanh1204.screenvocab.domain.usecase.auth;
 
-import com.google.firebase.auth.FirebaseUser;
 import com.ntramanh1204.screenvocab.domain.model.User;
 import com.ntramanh1204.screenvocab.domain.repository.AuthRepository;
 

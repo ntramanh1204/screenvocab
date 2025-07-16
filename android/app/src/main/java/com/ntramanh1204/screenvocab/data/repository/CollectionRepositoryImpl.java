@@ -42,7 +42,7 @@ public class CollectionRepositoryImpl implements CollectionRepository {
     @Override
     public Single<Collection> getCollectionWithWordsById(String id) {
         return collectionDao.getCollectionWithWordsById(id)
-                .map((CollectionWithWords cww) -> CollectionMapper.toDomain(cww)); // Ép kiểu rõ ràng
+                .map((CollectionWithWords cww) -> CollectionMapper.toDomain(cww));
     }
 
 }

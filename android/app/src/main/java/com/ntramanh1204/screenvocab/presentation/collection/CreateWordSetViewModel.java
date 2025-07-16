@@ -78,42 +78,8 @@ public class CreateWordSetViewModel extends ViewModel {
 
     // Constants
     private static final int MIN_WORDS_REQUIRED = 2;
-    private static final int MAX_WORDS_ALLOWED = 150; // From SRS requirements
+    private static final int MAX_WORDS_ALLOWED = 150;
 
-    //    // Data class for word item
-//    public static class WordItem {
-//        private String term;
-//        private String pronunciation;
-//        private String definition;
-//
-//        public WordItem() {
-//            this("", "", "");
-//        }
-//
-//        public WordItem(String term, String pronunciation, String definition) {
-//            this.term = term != null ? term : "";
-//            this.pronunciation = pronunciation != null ? pronunciation : "";
-//            this.definition = definition != null ? definition : "";
-//        }
-//
-//        // Getters and setters
-//        public String getTerm() { return term; }
-//        public void setTerm(String term) { this.term = term != null ? term : ""; }
-//
-//        public String getPronunciation() { return pronunciation; }
-//        public void setPronunciation(String pronunciation) { this.pronunciation = pronunciation != null ? pronunciation : ""; }
-//
-//        public String getDefinition() { return definition; }
-//        public void setDefinition(String definition) { this.definition = definition != null ? definition : ""; }
-//
-//        public boolean isEmpty() {
-//            return term.trim().isEmpty() && definition.trim().isEmpty();
-//        }
-//
-//        public boolean isValid() {
-//            return !term.trim().isEmpty() && !definition.trim().isEmpty();
-//        }
-//    }
     public CreateWordSetViewModel(
             CreateCollectionUseCase createCollectionUseCase,
             UpdateCollectionUseCase updateCollectionUseCase,
@@ -190,38 +156,37 @@ public class CreateWordSetViewModel extends ViewModel {
 
     public void saveWordSet() {
         if (!validateForm()) {
-            Log.d("SaveWordSet", "Validation failed, aborting save");
             _isLoading.setValue(false);
             return;
         }
+
         _isLoading.setValue(true);
         _error.setValue(null);
+
         String currentUserId = getCurrentUserId();
         if (currentUserId == null) {
             _error.setValue("User not authenticated");
             _isLoading.setValue(false);
             return;
         }
+
         CreateCollectionUseCase.Params params = new CreateCollectionUseCase.Params(
                 _title.getValue().trim(),
                 _description.getValue() != null ? _description.getValue().trim() : "",
                 currentUserId
         );
 
-        Log.d("SaveWordSet", "Saving collection: " + _title.getValue() + ", words: " + getValidWords().size());
         compositeDisposable.add(
                 createCollectionUseCase.execute(params)
-                        .flatMap(collection -> saveWordsToCollection(collection))
+                        .flatMap(this::saveWordsToCollection)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 collection -> {
-                                    Log.d("SaveWordSet", "Save successful");
                                     _isLoading.setValue(false);
                                     _isSaveSuccessful.setValue(true);
                                 },
                                 throwable -> {
-                                    Log.e("SaveWordSet", "Save failed: " + throwable.getMessage());
                                     _isLoading.setValue(false);
                                     _error.setValue("Failed to save: " + throwable.getMessage());
                                 }
@@ -298,20 +263,6 @@ public class CreateWordSetViewModel extends ViewModel {
             return false;
         }
         return true;
-    }
-
-    public void clearError() {
-        _error.setValue(null);
-    }
-
-    public void resetForm() {
-        _title.setValue("");
-        _description.setValue("");
-        _isPublic.setValue(false);
-        _error.setValue(null);
-        _isSaveSuccessful.setValue(false);
-        _isTitleValid.setValue(true);
-        initializeWithEmptyWords();
     }
 
     private String getCurrentUserId() {

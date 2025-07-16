@@ -44,10 +44,6 @@ public class ChooseWordSetViewModel extends ViewModel {
         selectedCollection.setValue(collection);
     }
 
-    public LiveData<Collection> getSelectedCollection() {
-        return selectedCollection;
-    }
-
     @Override
     protected void onCleared() {
         super.onCleared();

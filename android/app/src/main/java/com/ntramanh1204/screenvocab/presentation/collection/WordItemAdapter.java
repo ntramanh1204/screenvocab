@@ -46,7 +46,6 @@ public class WordItemAdapter extends ListAdapter<WordItem, WordItemAdapter.WordV
     @Override
     public void onBindViewHolder(@NonNull WordViewHolder holder, int position) {
         WordItem item = getItem(position);
-        Log.d("Adapter", "Binding item at position " + position + ": " + item.getTerm());
         holder.bind(item);
 
         holder.btnDelete.setOnClickListener(v -> {

@@ -26,10 +26,6 @@ private final SaveWallpaperUseCase saveWallpaperUseCase;
     private final MutableLiveData<Collection> selectedCollection = new MutableLiveData<>();
     private final CompositeDisposable disposables = new CompositeDisposable();
 
-//    public EditPreviewViewModel(GetCollectionByIdUseCase getCollectionByIdUseCase) {
-//        this.getCollectionByIdUseCase = getCollectionByIdUseCase;
-//    }
-
     public EditPreviewViewModel(GetCollectionWithWordsByIdUseCase getCollectionWithWordsByIdUseCase, SaveWallpaperUseCase saveWallpaperUseCase) {
         this.getCollectionWithWordsByIdUseCase = getCollectionWithWordsByIdUseCase;
         this.saveWallpaperUseCase = saveWallpaperUseCase;
@@ -53,39 +49,6 @@ private final SaveWallpaperUseCase saveWallpaperUseCase;
     public Completable saveWallpaper(WallpaperEntity wallpaperEntity) {
         return saveWallpaperUseCase.execute(wallpaperEntity);
     }
-
-//    public void loadCollectionById(String collectionId) {
-//        disposables.add(
-//                getCollectionByIdUseCase.execute(collectionId)
-//                        .subscribeOn(Schedulers.io())
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .subscribe(selectedCollection::setValue,
-//                                throwable -> {
-//                                    // Xử lý lỗi ở đây nếu muốn
-//                                    throwable.printStackTrace();
-//                                })
-//        );
-//    }
-
-
-//    public void loadCollectionById(String collectionId) {
-//        getCollectionByIdUseCase.execute(collectionId)
-//                .subscribeOn(Schedulers.io())  // Thêm dòng này để chạy ở background thread
-//                .observeOn(AndroidSchedulers.mainThread())  // Trả kết quả ở main thread để update UI
-//                .subscribe(collection -> {
-//                    selectedCollection.postValue(collection);
-//                }, throwable -> {
-//                    Log.e("EditPreviewVM", "Error loading collection", throwable);
-//                });
-//        // 💥 Nghĩa là: bạn đang truy cập Room database trực tiếp trên Main Thread trong loadCollectionById() của ViewModel → điều này bị cấm trong Room vì có thể gây đơ UI.
-//
-////        getCollectionByIdUseCase.execute(collectionId)
-////                .subscribe(collection -> {
-////                    selectedCollection.postValue(collection);
-////                }, throwable -> {
-////                    Log.e("EditPreviewVM", "Error loading collection", throwable);
-////                });
-//    }
 
     @Override
     protected void onCleared() {

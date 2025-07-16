@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.GridLayout;
@@ -54,11 +53,9 @@ public class EditPreviewActivity extends AppCompatActivity {
         CardView cardView = findViewById(R.id.card_preview);
 
         int selectedColor = getIntent().getIntExtra("selected_theme_color", -1);
-        Log.d("EditPreviewActivity", "Selected color received: " + selectedColor);
         cardView.setCardBackgroundColor(selectedColor);
 
         String collectionId = getIntent().getStringExtra("collection_id");
-        Log.d("EditPreviewActivity", "Collection ID received: " + collectionId);
 
         EditPreviewViewModelFactory factory = new EditPreviewViewModelFactory(
                 AppContainer.getInstance().getGetCollectionWithWordsByIdUseCase(),
@@ -71,18 +68,12 @@ public class EditPreviewActivity extends AppCompatActivity {
 
         viewModel.getSelectedCollection().observe(this, collection -> {
             if (collection != null) {
-                Log.d("EditPreviewActivity", "Collection loaded: id=" + collection.getCollectionId()
-                        + ", name=" + collection.getName());
                 renderPreview(collection);
-            } else {
-                Log.d("EditPreviewActivity", "Collection is null");
             }
         });
 
         if (collectionId != null) {
             viewModel.loadCollectionById(collectionId);
-        } else {
-            Log.d("EditPreviewActivity", "No collection ID passed");
         }
 
         TextView btnFinish = findViewById(R.id.btn_finish);
@@ -108,11 +99,7 @@ public class EditPreviewActivity extends AppCompatActivity {
             tvMean.setText(word.getDefinition());
 
             gridVocab.addView(item);
-
-            Log.d("EditPreviewActivity-word", "Words size: " +
-                    (collection.getWords() != null ? collection.getWords().size() : "null"));
         }
-        Log.d("EditPreviewActivity-word", "Words size: " + (collection.getWords() != null ? collection.getWords().size() : "null"));
     }
 
     private void saveWallpaper(CardView cardView) {
@@ -123,12 +110,9 @@ public class EditPreviewActivity extends AppCompatActivity {
         }
 
         try {
-            // Lưu internal
             String internalPath = SaveUtils.saveImageToInternalStorage(this, bitmap);
-            Log.d("saveWallpaper", "Saved internal: " + internalPath);
-
-            // Lưu external
             String externalPath;
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 externalPath = SaveUtils.saveImageToGallery(this, bitmap);
             } else {
@@ -142,9 +126,7 @@ public class EditPreviewActivity extends AppCompatActivity {
                 }
                 externalPath = saveToExternalStorage(bitmap);
             }
-            Log.d("saveWallpaper", "Saved external: " + externalPath);
 
-            // ===== THÊM PHẦN NÀY: Lưu vào database =====
             saveWallpaperToDatabase(internalPath, externalPath);
 
             showSavedDialog("Đã lưu hình nền:\nInternal: " + internalPath + "\nExternal: " + externalPath);
@@ -154,87 +136,56 @@ public class EditPreviewActivity extends AppCompatActivity {
         }
     }
 
-    // Thêm method mới
-    // Thêm method mới - SỬA LỖI: Sử dụng viewModel thay vì saveWallpaperUseCase trực tiếp
     private void saveWallpaperToDatabase(String internalPath, String externalPath) {
-        Log.d("saveWallpaperToDatabase", "=== SAVING TO DATABASE ===");
-
-        // Tạo unique ID cho wallpaper
         String wallpaperId = "wallpaper_" + System.currentTimeMillis();
+        String collectionId = getSelectedCollectionId();
+        String userId = getCurrentUserId();
 
-        // Lấy thông tin collection và user hiện tại
-        String collectionId = getSelectedCollectionId(); // Cần implement method này
-        String userId = getCurrentUserId(); // Cần implement method này
-
-        // Tạo WallpaperEntity
         WallpaperEntity wallpaperEntity = new WallpaperEntity(
                 wallpaperId,
                 collectionId,
                 userId,
-                null, // cloudinaryUrl - chưa có
-                null, // thumbnailUrl - chưa có
-                internalPath, // localFileUrl - đường dẫn internal
-                System.currentTimeMillis(), // createdAt
-                System.currentTimeMillis(), // updatedAt
-                "Wallpaper " + wallpaperId // title
+                null,
+                null,
+                internalPath,
+                System.currentTimeMillis(),
+                System.currentTimeMillis(),
+                "Wallpaper " + wallpaperId
         );
 
-        Log.d("saveWallpaperToDatabase", "Entity: " + wallpaperEntity.toString());
-
-        // SỬA LỖI: Sử dụng viewModel.saveWallpaper() thay vì saveWallpaperUseCase trực tiếp
         viewModel.saveWallpaper(wallpaperEntity)
-                .subscribeOn(Schedulers.io()) // Background thread
-                .observeOn(AndroidSchedulers.mainThread()) // Main thread
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        () -> {
-                            Log.d("saveWallpaperToDatabase", "✅ Wallpaper saved to database successfully!");
-                            // Có thể refresh HomeFragment ở đây
-                            notifyHomeFragmentToRefresh();
-                        },
-                        error -> {
-                            Log.e("saveWallpaperToDatabase", "❌ Error saving to database", error);
-                            // Vẫn thành công lưu file, chỉ lỗi database
-                            Toast.makeText(this, "Lưu file thành công nhưng lỗi database", Toast.LENGTH_SHORT).show();
-                        }
+                        this::notifyHomeFragmentToRefresh,
+                        error -> Toast.makeText(this, "Lưu file thành công nhưng lỗi database", Toast.LENGTH_SHORT).show()
                 );
     }
 
-    // Helper methods cần implement
     private String getSelectedCollectionId() {
-        // Lấy collection ID hiện tại (từ Intent hoặc SharedPreferences)
-        // Ví dụ:
         return getIntent().getStringExtra("collection_id");
-        // hoặc return "default_collection";
     }
 
     private String getCurrentUserId() {
-        // Lấy user ID hiện tại (từ SharedPreferences hoặc Firebase Auth)
-        // Ví dụ:
         SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
         return prefs.getString("current_user_id", "guest_user");
     }
 
     private void notifyHomeFragmentToRefresh() {
-        // Có thể dùng EventBus, LocalBroadcastManager, hoặc các cách khác
-        // Để notify HomeFragment refresh data
-        Log.d("notifyHomeFragmentToRefresh", "Should refresh HomeFragment");
+        // Để triển khai: EventBus, Broadcast, hoặc NavComponent callback...
     }
 
-
-    // Xử lý kết quả permission request
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == STORAGE_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, tiến hành lưu
                 if (pendingCardView != null) {
                     try {
                         Bitmap bitmap = getBitmapFromView(pendingCardView);
                         String savedPath = saveToExternalStorage(bitmap);
                         showSavedDialog(savedPath);
-                        Log.d("savelocation", savedPath);
                     } catch (IOException e) {
                         e.printStackTrace();
                         Toast.makeText(this, "Lỗi khi lưu hình!", Toast.LENGTH_SHORT).show();
@@ -242,13 +193,11 @@ public class EditPreviewActivity extends AppCompatActivity {
                     pendingCardView = null;
                 }
             } else {
-                // Permission denied
                 Toast.makeText(this, "Cần quyền truy cập bộ nhớ để lưu hình nền", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    // Tách logic lưu file thành method riêng
     private String saveToExternalStorage(Bitmap bitmap) throws IOException {
         File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "MyWallpapers");
         if (!dir.exists()) dir.mkdirs();
@@ -260,7 +209,6 @@ public class EditPreviewActivity extends AppCompatActivity {
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
         }
 
-        // Notify gallery
         addImageToGallery(file);
 
         return file.getAbsolutePath();
@@ -287,5 +235,4 @@ public class EditPreviewActivity extends AppCompatActivity {
         mediaScanIntent.setData(contentUri);
         sendBroadcast(mediaScanIntent);
     }
-
 }

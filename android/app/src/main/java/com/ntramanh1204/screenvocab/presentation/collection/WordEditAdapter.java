@@ -67,7 +67,6 @@ public class WordEditAdapter extends RecyclerView.Adapter<WordEditAdapter.WordEd
         holder.setupTextWatchers(position, word, onWordChangedListener);
 
         holder.btnDelete.setOnClickListener(v -> {
-            Log.d("WordEditAdapter", "Deleting word at position: " + position + " | term: " + word.getTerm());
             if (onWordChangedListener != null) {
                 onWordChangedListener.onWordDeleted(position);
             }

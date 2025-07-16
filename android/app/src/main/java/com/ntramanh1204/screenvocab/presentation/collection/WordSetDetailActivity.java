@@ -92,7 +92,6 @@ public class WordSetDetailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("WordSetDetail", "onResume: Reloading collection data for ID: " + collectionId);
         viewModel.loadCollectionDetails(collectionId);
     }
 }

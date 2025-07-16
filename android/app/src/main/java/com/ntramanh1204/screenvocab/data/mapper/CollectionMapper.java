@@ -8,8 +8,6 @@ import com.ntramanh1204.screenvocab.domain.model.Word;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public class CollectionMapper {
     public static CollectionEntity toEntity(Collection collection) {

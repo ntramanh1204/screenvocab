@@ -15,8 +15,7 @@ public class UserEntity {
     private boolean isGuest;
     private long createdAt;
     private long lastSyncAt;
-    
-    // Default constructor required for Firebase
+
     public UserEntity() {}
 
     @Ignore
@@ -28,8 +27,7 @@ public class UserEntity {
         this.createdAt = System.currentTimeMillis();
         this.lastSyncAt = System.currentTimeMillis();
     }
-    
-    // Getters and Setters
+
     @NonNull
     public String getUserId() { return userId; }
     public void setUserId(@NonNull String userId) { this.userId = userId; }

@@ -175,13 +175,9 @@ public class AppContainer {
     public GetCollectionByIdUseCase getGetCollectionByIdUseCase() { return getCollectionByIdUseCase; }
     public GetCollectionWithWordsByIdUseCase getGetCollectionWithWordsByIdUseCase() { return getCollectionWithWordsByIdUseCase; }
 
-    public GetWallpapersByUserUseCase getGetWallpapersByUserUseCase() {
-        return getWallpapersByUserUseCase;
-    }
+    public GetWallpapersByUserUseCase getGetWallpapersByUserUseCase() { return getWallpapersByUserUseCase; }
 
-    public GetWallpapersByCollectionUseCase getGetWallpapersByCollectionUseCase() {
-        return getWallpapersByCollectionUseCase;
-    }
+    public GetWallpapersByCollectionUseCase getGetWallpapersByCollectionUseCase() { return getWallpapersByCollectionUseCase; }
 
     public SaveWallpaperUseCase getSaveWallpaperUseCase() {
         return saveWallpaperUseCase;

@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverter;
 
 @Entity(tableName = "wallpapers")
 public class WallpaperEntity {
@@ -12,16 +11,16 @@ public class WallpaperEntity {
     @NonNull
     public String wallpaperId;
     public String collectionId;
-    public String userId; // THÊM FIELD NÀY
+    public String userId;
     public String theme;
     public int rows;
     public int cols;
-    public String textHierarchy; // JSON or CSV string
+    public String textHierarchy;
     public String cloudinaryUrl;
     public String thumbnailUrl;
     public String localFileUrl;
     public long createdAt;
-    public long updatedAt; // THÊM FIELD NÀY để match với Repository
+    public long updatedAt;
     public String resolution;
     public String format;
     public long fileSize;
@@ -85,7 +84,6 @@ public class WallpaperEntity {
         this.collectionId = collectionId;
     }
 
-    // THÊM GETTER/SETTER CHO USERID
     public String getUserId() {
         return userId;
     }
@@ -158,7 +156,6 @@ public class WallpaperEntity {
         this.createdAt = createdAt;
     }
 
-    // THÊM GETTER/SETTER CHO UPDATEDAT
     public long getUpdatedAt() {
         return updatedAt;
     }

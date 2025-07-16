@@ -18,7 +18,7 @@ public class WallpaperMapper {
         return new WallpaperEntity(
                 wallpaper.getWallpaperId(),
                 wallpaper.getCollectionId(),
-                wallpaper.getUserId(),                        // NEW
+                wallpaper.getUserId(),
                 wallpaper.getTheme().name(),
                 wallpaper.getGridDimensions().getRows(),
                 wallpaper.getGridDimensions().getCols(),
@@ -27,7 +27,7 @@ public class WallpaperMapper {
                 wallpaper.getThumbnailUrl(),
                 wallpaper.getLocalFileUrl(),
                 wallpaper.getCreatedAt(),
-                wallpaper.getUpdatedAt(),                     // NEW
+                wallpaper.getUpdatedAt(),
                 wallpaper.getMetadata().getResolution(),
                 wallpaper.getMetadata().getFormat(),
                 wallpaper.getMetadata().getFileSize()
@@ -48,7 +48,7 @@ public class WallpaperMapper {
         return new Wallpaper(
                 entity.wallpaperId,
                 entity.collectionId,
-                entity.userId,                                // NEW
+                entity.userId,
                 parseTheme(entity.theme),
                 new Wallpaper.GridDimensions(entity.rows, entity.cols),
                 textHierarchy,
@@ -56,7 +56,7 @@ public class WallpaperMapper {
                 entity.thumbnailUrl,
                 entity.localFileUrl,
                 entity.createdAt,
-                entity.updatedAt,                             // NEW
+                entity.updatedAt,
                 new Wallpaper.WallpaperMetadata(
                         entity.resolution,
                         entity.format,

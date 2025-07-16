@@ -90,9 +90,6 @@ public class ThemeSelectionActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.fab_add_color).setOnClickListener(v -> {
-            // Mở màn hình chọn màu (nếu có)
-            // Intent intent = new Intent(this, ColorPickerActivity.class);
-            // addColorLauncher.launch(intent);
 
             // Tạm thời giả lập thêm 1 màu ngẫu nhiên
             int randomColor = (int)(Math.random() * 0xFFFFFF) | 0xFF000000;

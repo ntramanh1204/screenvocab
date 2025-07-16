@@ -3,7 +3,6 @@ package com.ntramanh1204.screenvocab.domain.usecase.collection;
 import com.ntramanh1204.screenvocab.domain.model.Collection;
 import com.ntramanh1204.screenvocab.domain.repository.CollectionRepository;
 import com.ntramanh1204.screenvocab.data.mapper.CollectionMapper;
-import com.ntramanh1204.screenvocab.data.local.entities.CollectionEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;

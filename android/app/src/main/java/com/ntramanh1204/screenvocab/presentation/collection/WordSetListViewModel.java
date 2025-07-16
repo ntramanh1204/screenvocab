@@ -96,20 +96,6 @@ public class WordSetListViewModel extends ViewModel {
         );
     }
 
-    public void searchCollections(String query) {
-        _searchQuery.setValue(query);
-        List<Collection> originalCollections = _originalCollections.getValue();
-        if (originalCollections == null) {
-            return;
-        }
-        if (query == null || query.trim().isEmpty()) {
-            _collections.setValue(originalCollections);
-            _isEmpty.setValue(originalCollections.isEmpty());
-        } else {
-            applySearchFilter(query, originalCollections);
-        }
-    }
-
     private void applySearchFilter(String query, List<Collection> collections) {
         List<Collection> filteredCollections = collections.stream()
                 .filter(collection -> collection.getName().toLowerCase()
@@ -117,79 +103,6 @@ public class WordSetListViewModel extends ViewModel {
                 .collect(Collectors.toList());
         _collections.setValue(filteredCollections);
         _isEmpty.setValue(filteredCollections.isEmpty());
-    }
-
-    private Collection findCollectionById(String collectionId) {
-        List<Collection> currentCollections = _collections.getValue();
-        if (currentCollections == null) return null;
-        for (Collection c : currentCollections) {
-            if (c.getCollectionId().equals(collectionId)) {
-                return c;
-            }
-        }
-        return null;
-    }
-
-    public void deleteCollection(String collectionId) {
-        Collection current = findCollectionById(collectionId);
-        if (current == null) {
-            _error.setValue("Collection not found");
-            return;
-        }
-        _isLoading.setValue(true);
-        _error.setValue(null);
-
-        compositeDisposable.add(
-                deleteCollectionUseCase.execute(current)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                () -> {
-                                    _isLoading.setValue(false);
-                                    loadCollections();
-                                },
-                                throwable -> {
-                                    _isLoading.setValue(false);
-                                    _error.setValue("Failed to delete word set: " + throwable.getMessage());
-                                }
-                        )
-        );
-    }
-
-    public void updateCollection(String collectionId, String newName) {
-        Collection current = findCollectionById(collectionId);
-        if (current == null) {
-            _error.setValue("Collection not found");
-            return;
-        }
-        _isLoading.setValue(true);
-        _error.setValue(null);
-
-        Collection updatedCollection = current.updateName(newName);
-
-        compositeDisposable.add(
-                updateCollectionUseCase.execute(updatedCollection)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                updated -> {
-                                    _isLoading.setValue(false);
-                                    loadCollections();
-                                },
-                                throwable -> {
-                                    _isLoading.setValue(false);
-                                    _error.setValue("Failed to update word set: " + throwable.getMessage());
-                                }
-                        )
-        );
-    }
-
-    public void refreshCollections() {
-        loadCollections();
-    }
-
-    public void clearError() {
-        _error.setValue(null);
     }
 
     private String getCurrentUserId() {
