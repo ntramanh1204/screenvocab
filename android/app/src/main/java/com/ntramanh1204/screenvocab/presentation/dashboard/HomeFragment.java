@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ntramanh1204.screenvocab.R;
 import com.ntramanh1204.screenvocab.domain.model.Wallpaper;
+import com.ntramanh1204.screenvocab.presentation.shared.SharedWallpaperViewModel;
 import com.ntramanh1204.screenvocab.presentation.theme.ThemeSelectionActivity;
 
 import java.util.ArrayList;
@@ -51,6 +52,16 @@ public class HomeFragment extends Fragment implements WallpaperGridAdapter.OnWal
         setupRecyclerView();
         setupClickListeners();
         setupObservers();
+
+        // trong onViewCreated hoặc onCreateView
+        SharedWallpaperViewModel sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedWallpaperViewModel.class);
+        sharedViewModel.getWallpaperSaved().observe(getViewLifecycleOwner(), saved -> {
+            if (saved != null && saved) {
+                viewModel.loadData(); // gọi lại loadData()
+                sharedViewModel.setWallpaperSaved(false); // reset flag
+            }
+        });
+
 
         return view;
     }

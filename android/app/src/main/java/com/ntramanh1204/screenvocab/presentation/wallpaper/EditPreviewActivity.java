@@ -19,8 +19,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.ntramanh1204.screenvocab.R;
@@ -29,6 +29,7 @@ import com.ntramanh1204.screenvocab.core.utils.SaveUtils;
 import com.ntramanh1204.screenvocab.data.local.entities.WallpaperEntity;
 import com.ntramanh1204.screenvocab.domain.model.Collection;
 import com.ntramanh1204.screenvocab.domain.model.Word;
+import com.ntramanh1204.screenvocab.presentation.shared.SharedWallpaperViewModel;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -42,6 +43,7 @@ public class EditPreviewActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_REQUEST_CODE = 100;
     private CardView pendingCardView;
     private EditPreviewViewModel viewModel;
+    private SharedWallpaperViewModel sharedWallpaperViewModel;
     private TextView tvTitle, tvDesc;
     private GridLayout gridVocab;
 
@@ -50,8 +52,9 @@ public class EditPreviewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_wallpaper);
 
-        CardView cardView = findViewById(R.id.card_preview);
+        sharedWallpaperViewModel = new ViewModelProvider(this).get(SharedWallpaperViewModel.class);
 
+        CardView cardView = findViewById(R.id.card_preview);
         int selectedColor = getIntent().getIntExtra("selected_theme_color", -1);
         cardView.setCardBackgroundColor(selectedColor);
 
@@ -129,7 +132,6 @@ public class EditPreviewActivity extends AppCompatActivity {
 
             saveWallpaperToDatabase(internalPath, externalPath);
 
-            showSavedDialog("Đã lưu hình nền:\nInternal: " + internalPath + "\nExternal: " + externalPath);
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(this, "Lỗi khi lưu hình!", Toast.LENGTH_SHORT).show();
@@ -157,7 +159,10 @@ public class EditPreviewActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        this::notifyHomeFragmentToRefresh,
+                        () -> {
+                            sharedWallpaperViewModel.setWallpaperSaved(true); // Trigger reload ở HomeFragment
+                            showSavedDialog("Đã lưu hình nền:\nInternal: " + internalPath + "\nExternal: " + externalPath);
+                        },
                         error -> Toast.makeText(this, "Lưu file thành công nhưng lỗi database", Toast.LENGTH_SHORT).show()
                 );
     }
@@ -169,33 +174,6 @@ public class EditPreviewActivity extends AppCompatActivity {
     private String getCurrentUserId() {
         SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
         return prefs.getString("current_user_id", "guest_user");
-    }
-
-    private void notifyHomeFragmentToRefresh() {
-        // Để triển khai: EventBus, Broadcast, hoặc NavComponent callback...
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == STORAGE_PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (pendingCardView != null) {
-                    try {
-                        Bitmap bitmap = getBitmapFromView(pendingCardView);
-                        String savedPath = saveToExternalStorage(bitmap);
-                        showSavedDialog(savedPath);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Toast.makeText(this, "Lỗi khi lưu hình!", Toast.LENGTH_SHORT).show();
-                    }
-                    pendingCardView = null;
-                }
-            } else {
-                Toast.makeText(this, "Cần quyền truy cập bộ nhớ để lưu hình nền", Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     private String saveToExternalStorage(Bitmap bitmap) throws IOException {
@@ -221,11 +199,14 @@ public class EditPreviewActivity extends AppCompatActivity {
         return returnedBitmap;
     }
 
-    private void showSavedDialog(String filePath) {
+    private void showSavedDialog(String message) {
         new AlertDialog.Builder(this)
                 .setTitle("Đã lưu hình nền")
-                .setMessage("Hình nền đã được lưu vào:\n" + filePath)
-                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .setMessage(message)
+                .setPositiveButton("OK", (dialog, which) -> {
+                    dialog.dismiss();
+                    finish(); // Quay lại HomeFragment
+                })
                 .show();
     }
 
