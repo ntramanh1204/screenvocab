@@ -7,6 +7,7 @@ import java.util.UUID;
 public class Wallpaper {
     private final String wallpaperId;
     private final String collectionId;
+    private final String userId;
     private final Theme theme;
     private final GridDimensions gridDimensions;
     private final List<String> textHierarchy;
@@ -14,14 +15,32 @@ public class Wallpaper {
     private final String thumbnailUrl;
     private final String localFileUrl;
     private final long createdAt;
+    private final long updatedAt;
     private final WallpaperMetadata metadata;
 
-    public Wallpaper(String wallpaperId, String collectionId, Theme theme,
+    private Wallpaper(Builder builder) {
+        this.wallpaperId = builder.wallpaperId;
+        this.collectionId = builder.collectionId;
+        this.userId = builder.userId;
+        this.theme = builder.theme;
+        this.gridDimensions = builder.gridDimensions;
+        this.textHierarchy = builder.textHierarchy;
+        this.cloudinaryUrl = builder.cloudinaryUrl;
+        this.thumbnailUrl = builder.thumbnailUrl;
+        this.localFileUrl = builder.localFileUrl;
+        this.createdAt = builder.createdAt;
+        this.updatedAt = builder.updatedAt;
+        this.metadata = builder.metadata;
+    }
+
+    // Constructor cũ để backward compatibility
+    public Wallpaper(String wallpaperId, String collectionId, String userId, Theme theme,
                      GridDimensions gridDimensions, List<String> textHierarchy,
                      String cloudinaryUrl, String thumbnailUrl, String localFileUrl,
-                     long createdAt, WallpaperMetadata metadata) {
+                     long createdAt, long updatedAt, WallpaperMetadata metadata) {
         this.wallpaperId = wallpaperId;
         this.collectionId = collectionId;
+        this.userId = userId;
         this.theme = theme;
         this.gridDimensions = gridDimensions;
         this.textHierarchy = textHierarchy;
@@ -29,61 +48,140 @@ public class Wallpaper {
         this.thumbnailUrl = thumbnailUrl;
         this.localFileUrl = localFileUrl;
         this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
         this.metadata = metadata;
     }
 
     // Factory method for creating new wallpapers
-    public static Wallpaper create(String collectionId, Theme theme,
+    public static Wallpaper create(String collectionId, String userId, Theme theme,
                                    GridDimensions gridDimensions, List<String> textHierarchy) {
-        return new Wallpaper(
-                UUID.randomUUID().toString(),
-                collectionId,
-                theme,
-                gridDimensions,
-                textHierarchy,
-                null, // cloudinaryUrl set after upload
-                null, // thumbnailUrl set after upload
-                null, // localFileUrl set after save
-                System.currentTimeMillis(),
-                WallpaperMetadata.createDefault()
-        );
+        return new Builder()
+                .wallpaperId(UUID.randomUUID().toString())
+                .collectionId(collectionId)
+                .userId(userId)
+                .theme(theme)
+                .gridDimensions(gridDimensions)
+                .textHierarchy(textHierarchy)
+                .createdAt(System.currentTimeMillis())
+                .metadata(WallpaperMetadata.createDefault())
+                .build();
     }
 
     // Factory method for updating URLs after upload/save
     public Wallpaper updateUrls(String cloudinaryUrl, String thumbnailUrl, String localFileUrl) {
-        return new Wallpaper(
-                this.wallpaperId,
-                this.collectionId,
-                this.theme,
-                this.gridDimensions,
-                this.textHierarchy,
-                cloudinaryUrl,
-                thumbnailUrl,
-                localFileUrl,
-                this.createdAt,
-                this.metadata
-        );
+        return toBuilder()
+                .cloudinaryUrl(cloudinaryUrl)
+                .thumbnailUrl(thumbnailUrl)
+                .localFileUrl(localFileUrl)
+                .build();
     }
 
     // Factory method for updating metadata
     public Wallpaper updateMetadata(WallpaperMetadata metadata) {
-        return new Wallpaper(
-                this.wallpaperId,
-                this.collectionId,
-                this.theme,
-                this.gridDimensions,
-                this.textHierarchy,
-                this.cloudinaryUrl,
-                this.thumbnailUrl,
-                this.localFileUrl,
-                this.createdAt,
-                metadata
-        );
+        return toBuilder()
+                .metadata(metadata)
+                .build();
+    }
+
+    // ToBuilder method - tạo Builder từ instance hiện tại
+    public Builder toBuilder() {
+        return new Builder()
+                .wallpaperId(this.wallpaperId)
+                .collectionId(this.collectionId)
+                .userId(this.userId)
+                .theme(this.theme)
+                .gridDimensions(this.gridDimensions)
+                .textHierarchy(this.textHierarchy)
+                .cloudinaryUrl(this.cloudinaryUrl)
+                .thumbnailUrl(this.thumbnailUrl)
+                .localFileUrl(this.localFileUrl)
+                .createdAt(this.createdAt)
+                .updatedAt(this.updatedAt)
+                .metadata(this.metadata);
+    }
+
+    // Builder class
+    public static class Builder {
+        private String wallpaperId;
+        private String collectionId;
+        private String userId;
+        private Theme theme;
+        private GridDimensions gridDimensions;
+        private List<String> textHierarchy;
+        private String cloudinaryUrl;
+        private String thumbnailUrl;
+        private String localFileUrl;
+        private long createdAt;
+        private long updatedAt;
+        private WallpaperMetadata metadata;
+
+        public Builder wallpaperId(String wallpaperId) {
+            this.wallpaperId = wallpaperId;
+            return this;
+        }
+
+        public Builder collectionId(String collectionId) {
+            this.collectionId = collectionId;
+            return this;
+        }
+
+        public Builder userId(String userId) {
+            this.userId = userId;
+            return this;
+        }
+        public Builder theme(Theme theme) {
+            this.theme = theme;
+            return this;
+        }
+
+        public Builder gridDimensions(GridDimensions gridDimensions) {
+            this.gridDimensions = gridDimensions;
+            return this;
+        }
+
+        public Builder textHierarchy(List<String> textHierarchy) {
+            this.textHierarchy = textHierarchy;
+            return this;
+        }
+
+        public Builder cloudinaryUrl(String cloudinaryUrl) {
+            this.cloudinaryUrl = cloudinaryUrl;
+            return this;
+        }
+
+        public Builder thumbnailUrl(String thumbnailUrl) {
+            this.thumbnailUrl = thumbnailUrl;
+            return this;
+        }
+
+        public Builder localFileUrl(String localFileUrl) {
+            this.localFileUrl = localFileUrl;
+            return this;
+        }
+
+        public Builder createdAt(long createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+        public Builder updatedAt(long updatedAt) {
+            this.updatedAt = updatedAt;
+            return this;
+        }
+        public Builder metadata(WallpaperMetadata metadata) {
+            this.metadata = metadata;
+            return this;
+        }
+
+        public Wallpaper build() {
+            return new Wallpaper(this);
+        }
     }
 
     // Getters
     public String getWallpaperId() { return wallpaperId; }
     public String getCollectionId() { return collectionId; }
+    public String getUserId() { return userId; }
+    public long getUpdatedAt() { return updatedAt; }
     public Theme getTheme() { return theme; }
     public GridDimensions getGridDimensions() { return gridDimensions; }
     public List<String> getTextHierarchy() { return textHierarchy; }

@@ -4,6 +4,7 @@ import androidx.room.Room;
 import com.ntramanh1204.screenvocab.ScreenVocabApp;
 import com.ntramanh1204.screenvocab.data.local.database.ScreenVocabDatabase;
 import com.ntramanh1204.screenvocab.data.mapper.UserMapper;
+import com.ntramanh1204.screenvocab.data.mapper.WallpaperMapper;
 import com.ntramanh1204.screenvocab.data.remote.CloudinaryDataSource;
 import com.ntramanh1204.screenvocab.data.remote.FirebaseAuthDataSource;
 import com.ntramanh1204.screenvocab.data.remote.FirestoreDataSource;
@@ -29,6 +30,7 @@ import com.ntramanh1204.screenvocab.domain.usecase.collection.GetCollectionsByUs
 import com.ntramanh1204.screenvocab.domain.usecase.collection.UpdateCollectionUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.wallpaper.DeleteWallpaperUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.wallpaper.GetWallpapersByCollectionUseCase;
+import com.ntramanh1204.screenvocab.domain.usecase.wallpaper.GetWallpapersByUserUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.wallpaper.SaveWallpaperUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.wallpaper.UpdateWallpaperUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.word.CreateWordUseCase;
@@ -72,13 +74,14 @@ public class AppContainer {
     private GetCollectionByIdUseCase getCollectionByIdUseCase;
     private GetCollectionWithWordsByIdUseCase getCollectionWithWordsByIdUseCase;
     private GetWallpapersByCollectionUseCase getWallpapersByCollectionUseCase;
+    private GetWallpapersByUserUseCase getWallpapersByUserUseCase;
     private SaveWallpaperUseCase saveWallpaperUseCase;
     private UpdateWallpaperUseCase updateWallpaperUseCase;
     private DeleteWallpaperUseCase deleteWallpaperUseCase;
 
-
     // Mappers
     private UserMapper userMapper;
+    private WallpaperMapper wallpaperMapper;
 
     private AppContainer() {
         initializeDependencies();
@@ -97,6 +100,7 @@ public class AppContainer {
 
         // 2. Initialize mappers
         userMapper = new UserMapper();
+        wallpaperMapper = new WallpaperMapper();
 
         // 3. Initialize data sources
         authDataSource = new FirebaseAuthDataSource();
@@ -119,7 +123,9 @@ public class AppContainer {
         );
 
         wallpaperRepository = new WallpaperRepositoryImpl(
-                database.wallpaperDao()
+                database.wallpaperDao(),
+                wallpaperMapper,
+                ScreenVocabApp.getInstance().getApplicationContext()
         );
 
         wordRepository = new WordRepositoryImpl(
@@ -145,11 +151,10 @@ public class AppContainer {
         getCollectionWithWordsByIdUseCase = new GetCollectionWithWordsByIdUseCase(collectionRepository);
 
         getWallpapersByCollectionUseCase = new GetWallpapersByCollectionUseCase(wallpaperRepository);
+        getWallpapersByUserUseCase = new GetWallpapersByUserUseCase(wallpaperRepository);
         saveWallpaperUseCase = new SaveWallpaperUseCase(wallpaperRepository);
         updateWallpaperUseCase = new UpdateWallpaperUseCase(wallpaperRepository);
         deleteWallpaperUseCase = new DeleteWallpaperUseCase(wallpaperRepository);
-
-
     }
 
     // Getters
@@ -170,6 +175,10 @@ public class AppContainer {
     public GetCollectionByIdUseCase getGetCollectionByIdUseCase() { return getCollectionByIdUseCase; }
     public GetCollectionWithWordsByIdUseCase getGetCollectionWithWordsByIdUseCase() { return getCollectionWithWordsByIdUseCase; }
 
+    public GetWallpapersByUserUseCase getGetWallpapersByUserUseCase() {
+        return getWallpapersByUserUseCase;
+    }
+
     public GetWallpapersByCollectionUseCase getGetWallpapersByCollectionUseCase() {
         return getWallpapersByCollectionUseCase;
     }
@@ -185,7 +194,6 @@ public class AppContainer {
     public DeleteWallpaperUseCase getDeleteWallpaperUseCase() {
         return deleteWallpaperUseCase;
     }
-
 
     public AuthRepository getAuthRepository() { return authRepository; }
     public UserRepository getUserRepository() { return userRepository; }

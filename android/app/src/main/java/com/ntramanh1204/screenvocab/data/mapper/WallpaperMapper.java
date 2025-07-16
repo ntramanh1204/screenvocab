@@ -18,18 +18,21 @@ public class WallpaperMapper {
         return new WallpaperEntity(
                 wallpaper.getWallpaperId(),
                 wallpaper.getCollectionId(),
-                wallpaper.getTheme().name(), // store enum name as string
+                wallpaper.getUserId(),                        // NEW
+                wallpaper.getTheme().name(),
                 wallpaper.getGridDimensions().getRows(),
                 wallpaper.getGridDimensions().getCols(),
-                gson.toJson(wallpaper.getTextHierarchy()), // convert list to JSON
+                gson.toJson(wallpaper.getTextHierarchy()),
                 wallpaper.getCloudinaryUrl(),
                 wallpaper.getThumbnailUrl(),
                 wallpaper.getLocalFileUrl(),
                 wallpaper.getCreatedAt(),
+                wallpaper.getUpdatedAt(),                     // NEW
                 wallpaper.getMetadata().getResolution(),
                 wallpaper.getMetadata().getFormat(),
                 wallpaper.getMetadata().getFileSize()
         );
+
     }
 
     // ---------------------- TO DOMAIN ----------------------
@@ -45,6 +48,7 @@ public class WallpaperMapper {
         return new Wallpaper(
                 entity.wallpaperId,
                 entity.collectionId,
+                entity.userId,                                // NEW
                 parseTheme(entity.theme),
                 new Wallpaper.GridDimensions(entity.rows, entity.cols),
                 textHierarchy,
@@ -52,12 +56,14 @@ public class WallpaperMapper {
                 entity.thumbnailUrl,
                 entity.localFileUrl,
                 entity.createdAt,
+                entity.updatedAt,                             // NEW
                 new Wallpaper.WallpaperMetadata(
                         entity.resolution,
                         entity.format,
                         entity.fileSize
                 )
         );
+
     }
 
     // Helper: Convert string back to enum safely

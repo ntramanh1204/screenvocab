@@ -6,11 +6,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.ntramanh1204.screenvocab.data.local.entities.WallpaperEntity;
 import com.ntramanh1204.screenvocab.domain.model.Collection;
-import com.ntramanh1204.screenvocab.domain.usecase.collection.GetCollectionByIdUseCase;
 import com.ntramanh1204.screenvocab.domain.usecase.collection.GetCollectionWithWordsByIdUseCase;
+import com.ntramanh1204.screenvocab.domain.usecase.wallpaper.SaveWallpaperUseCase;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -19,6 +21,7 @@ public class EditPreviewViewModel extends ViewModel {
 
 //    private final GetCollectionByIdUseCase getCollectionByIdUseCase;
 private final GetCollectionWithWordsByIdUseCase getCollectionWithWordsByIdUseCase;
+private final SaveWallpaperUseCase saveWallpaperUseCase;
 
     private final MutableLiveData<Collection> selectedCollection = new MutableLiveData<>();
     private final CompositeDisposable disposables = new CompositeDisposable();
@@ -27,8 +30,9 @@ private final GetCollectionWithWordsByIdUseCase getCollectionWithWordsByIdUseCas
 //        this.getCollectionByIdUseCase = getCollectionByIdUseCase;
 //    }
 
-    public EditPreviewViewModel(GetCollectionWithWordsByIdUseCase getCollectionWithWordsByIdUseCase) {
+    public EditPreviewViewModel(GetCollectionWithWordsByIdUseCase getCollectionWithWordsByIdUseCase, SaveWallpaperUseCase saveWallpaperUseCase) {
         this.getCollectionWithWordsByIdUseCase = getCollectionWithWordsByIdUseCase;
+        this.saveWallpaperUseCase = saveWallpaperUseCase;
     }
 
     public void loadCollectionById(String id) {
@@ -44,6 +48,10 @@ private final GetCollectionWithWordsByIdUseCase getCollectionWithWordsByIdUseCas
 
     public LiveData<Collection> getSelectedCollection() {
         return selectedCollection;
+    }
+
+    public Completable saveWallpaper(WallpaperEntity wallpaperEntity) {
+        return saveWallpaperUseCase.execute(wallpaperEntity);
     }
 
 //    public void loadCollectionById(String collectionId) {

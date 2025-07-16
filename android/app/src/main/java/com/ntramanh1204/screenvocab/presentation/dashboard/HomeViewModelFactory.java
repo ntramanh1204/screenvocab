@@ -17,7 +17,7 @@ public class HomeViewModelFactory implements ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(HomeViewModel.class)) {
             return (T) new HomeViewModel(
                     appContainer.getCollectionRepository(),
-                    appContainer.getWallpaperRepository(),
+                    appContainer.getGetWallpapersByUserUseCase(),
                     appContainer.getAuthRepository()
             );
         }

@@ -9,6 +9,8 @@ import android.os.Build;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.IOException;
 
@@ -42,4 +44,21 @@ public class SaveUtils {
 
         return savedImagePath;
     }
+
+    public static String saveImageToInternalStorage(Context context, Bitmap bitmap) throws IOException {
+        if (bitmap == null) throw new IllegalArgumentException("Bitmap cannot be null");
+
+        String filename = "wallpaper_" + System.currentTimeMillis() + ".png";
+
+        try (FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE)) {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (IOException e) {
+            Log.e("SaveUtils", "Error saving image to internal storage", e);
+            throw e;
+        }
+
+        File file = new File(context.getFilesDir(), filename);
+        return file.getAbsolutePath();
+    }
+
 }

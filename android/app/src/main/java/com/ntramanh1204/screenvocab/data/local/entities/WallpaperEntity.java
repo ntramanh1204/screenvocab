@@ -12,6 +12,7 @@ public class WallpaperEntity {
     @NonNull
     public String wallpaperId;
     public String collectionId;
+    public String userId; // THÊM FIELD NÀY
     public String theme;
     public int rows;
     public int cols;
@@ -20,6 +21,7 @@ public class WallpaperEntity {
     public String thumbnailUrl;
     public String localFileUrl;
     public long createdAt;
+    public long updatedAt; // THÊM FIELD NÀY để match với Repository
     public String resolution;
     public String format;
     public long fileSize;
@@ -28,9 +30,10 @@ public class WallpaperEntity {
     }
 
     @Ignore
-    public WallpaperEntity(@NonNull String wallpaperId, String collectionId, String theme, int rows, int cols, String textHierarchy, String cloudinaryUrl, String thumbnailUrl, String localFileUrl, long createdAt, String resolution, String format, long fileSize) {
+    public WallpaperEntity(@NonNull String wallpaperId, String collectionId, String userId, String theme, int rows, int cols, String textHierarchy, String cloudinaryUrl, String thumbnailUrl, String localFileUrl, long createdAt, long updatedAt, String resolution, String format, long fileSize) {
         this.wallpaperId = wallpaperId;
         this.collectionId = collectionId;
+        this.userId = userId;
         this.theme = theme;
         this.rows = rows;
         this.cols = cols;
@@ -39,10 +42,32 @@ public class WallpaperEntity {
         this.thumbnailUrl = thumbnailUrl;
         this.localFileUrl = localFileUrl;
         this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
         this.resolution = resolution;
         this.format = format;
         this.fileSize = fileSize;
     }
+
+    // CONSTRUCTOR ĐƠN GIẢN HƠN CHO DEBUG
+    @Ignore
+    public WallpaperEntity(@NonNull String wallpaperId, String collectionId, String userId, String cloudinaryUrl, String thumbnailUrl, String localFileUrl, long createdAt, long updatedAt, String theme) {
+        this.wallpaperId = wallpaperId;
+        this.collectionId = collectionId;
+        this.userId = userId;
+        this.cloudinaryUrl = cloudinaryUrl;
+        this.thumbnailUrl = thumbnailUrl;
+        this.localFileUrl = localFileUrl;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.theme = theme;
+        this.rows = 0;
+        this.cols = 0;
+        this.textHierarchy = "";
+        this.resolution = "1080x1920";
+        this.format = "jpg";
+        this.fileSize = 0;
+    }
+
     @NonNull
     public String getWallpaperId() {
         return wallpaperId;
@@ -58,6 +83,15 @@ public class WallpaperEntity {
 
     public void setCollectionId(String collectionId) {
         this.collectionId = collectionId;
+    }
+
+    // THÊM GETTER/SETTER CHO USERID
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getTheme() {
@@ -122,6 +156,15 @@ public class WallpaperEntity {
 
     public void setCreatedAt(long createdAt) {
         this.createdAt = createdAt;
+    }
+
+    // THÊM GETTER/SETTER CHO UPDATEDAT
+    public long getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(long updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public String getResolution() {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ntramanh1204.screenvocab.R;
 import com.ntramanh1204.screenvocab.core.di.AppContainer;
+import com.ntramanh1204.screenvocab.domain.model.Wallpaper;
 import com.ntramanh1204.screenvocab.presentation.theme.ThemeSelectionActivity;
 
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ public class HomeFragment extends Fragment implements WallpaperGridAdapter.OnWal
     private LinearLayout llCreateWallpaper;
     private LinearLayout llWordCollections;
 
-    private List<String> wallpaperList;
+    private List<Wallpaper> wallpaperList;
     private WallpaperGridAdapter wallpaperAdapter;
     private HomeViewModel viewModel;
 
@@ -55,12 +57,20 @@ public class HomeFragment extends Fragment implements WallpaperGridAdapter.OnWal
         return view;
     }
 
+    // THAY THẾ method initViewModel() hiện tại bằng:
     private void initViewModel() {
         HomeViewModelFactory factory = new HomeViewModelFactory();
         viewModel = new ViewModelProvider(this, factory).get(HomeViewModel.class);
-        String collectionId = getArguments() != null ? getArguments().getString("guestCollectionId", "default_collection") : "default_collection";
+
+        String collectionId = getArguments() != null ?
+                getArguments().getString("guestCollectionId", "default_collection") :
+                "default_collection";
+
+        Log.d("HomeFragment", "=== DEBUG INIT ===");
+        Log.d("HomeFragment", "Using collectionId: " + collectionId);
+        Log.d("HomeFragment", "==================");
+
         viewModel.loadData(collectionId);
-//        viewModel.loadData(); // Không cần truyền userId
     }
 
     private void initViews(View view) {
@@ -90,6 +100,7 @@ public class HomeFragment extends Fragment implements WallpaperGridAdapter.OnWal
         });
     }
 
+    // THAY THẾ method setupObservers() hiện tại bằng:
     private void setupObservers() {
         viewModel.getCollectionsCount().observe(getViewLifecycleOwner(), count -> {
             if (!isAdded()) return;
@@ -98,6 +109,18 @@ public class HomeFragment extends Fragment implements WallpaperGridAdapter.OnWal
 
         viewModel.getWallpapers().observe(getViewLifecycleOwner(), wallpapers -> {
             if (!isAdded()) return;
+
+            // DEBUG: Thêm log này
+            Log.d("HomeFragment", "=== DEBUG WALLPAPERS ===");
+            Log.d("HomeFragment", "Wallpapers received: " + wallpapers.size());
+            for (Wallpaper wallpaper : wallpapers) {
+                Log.d("HomeFragment", "Wallpaper ID: " + wallpaper.getWallpaperId());
+                Log.d("HomeFragment", "Collection ID: " + wallpaper.getCollectionId());
+                Log.d("HomeFragment", "Has local file: " + wallpaper.hasLocalFile());
+                Log.d("HomeFragment", "Local file URL: " + wallpaper.getLocalFileUrl());
+            }
+            Log.d("HomeFragment", "========================");
+
             wallpaperList.clear();
             wallpaperList.addAll(wallpapers);
             wallpaperAdapter.notifyDataSetChanged();
@@ -110,11 +133,13 @@ public class HomeFragment extends Fragment implements WallpaperGridAdapter.OnWal
 
         viewModel.getError().observe(getViewLifecycleOwner(), error -> {
             if (!isAdded() || error == null) return;
+            Log.e("HomeFragment", "ViewModel error: " + error); // DEBUG
             Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
         });
 
         viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
             if (!isAdded()) return;
+            Log.d("HomeFragment", "Loading state: " + isLoading); // DEBUG
             // TODO: Hiển thị loading UI nếu cần
         });
     }
@@ -137,23 +162,41 @@ public class HomeFragment extends Fragment implements WallpaperGridAdapter.OnWal
         startActivity(intent);
     }
 
+//    private boolean isGuest() {
+//        // TODO: Kiểm tra từ AuthRepository hoặc SharedPreferences
+//        SharedPreferences prefs = requireContext().getSharedPreferences("ScreenVocabPrefs", Context.MODE_PRIVATE);
+//        return prefs.getBoolean("isGuest", false);
+////        return true; // Giả lập guest
+//    }
+
+    // THAY THẾ method isGuest() hiện tại bằng:
     private boolean isGuest() {
-        // TODO: Kiểm tra từ AuthRepository hoặc SharedPreferences
         SharedPreferences prefs = requireContext().getSharedPreferences("ScreenVocabPrefs", Context.MODE_PRIVATE);
-        return prefs.getBoolean("isGuest", false);
-//        return true; // Giả lập guest
+        boolean isGuest = prefs.getBoolean("isGuest", false);
+
+        Log.d("HomeFragment", "=== DEBUG isGuest ===");
+        Log.d("HomeFragment", "isGuest: " + isGuest);
+        Log.d("HomeFragment", "====================");
+
+        return isGuest;
     }
 
+    // THAY THẾ method hasCreatedWallpaper() hiện tại bằng:
     private boolean hasCreatedWallpaper() {
-        // TODO: Kiểm tra RoomDB hoặc SharedPreferences
-//        return wallpaperRepository.getWallpapersByCollection("guest_collection").blockingGet().size() > 0;
-        // hoac
-        String collectionId = getArguments() != null ? getArguments().getString("guestCollectionId", "default_collection") : "default_collection";
-        return AppContainer.getInstance().getWallpaperRepository()
-                .getWallpapersByCollection(collectionId)
-                .blockingGet()
-                .size() > 0;
-//        return false; // Giả lập chưa tạo
+        try {
+            // Kiểm tra từ danh sách đã load thay vì query database
+            boolean hasWallpapers = wallpaperList != null && !wallpaperList.isEmpty();
+
+            Log.d("HomeFragment", "=== DEBUG hasCreatedWallpaper ===");
+            Log.d("HomeFragment", "wallpaperList size: " + (wallpaperList != null ? wallpaperList.size() : 0));
+            Log.d("HomeFragment", "hasWallpapers: " + hasWallpapers);
+            Log.d("HomeFragment", "===============================");
+
+            return hasWallpapers;
+        } catch (Exception e) {
+            Log.e("HomeFragment", "Error checking wallpapers", e);
+            return false;
+        }
     }
 
 //    Đoạn code bạn trích dẫn trong HomeFragment (phương thức showCreateWallpaperFlow, isGuest, hasCreatedWallpaper) là đúng hướng, nhưng hiện tại dùng giả lập (return true/return false). Cần sửa sau này để:

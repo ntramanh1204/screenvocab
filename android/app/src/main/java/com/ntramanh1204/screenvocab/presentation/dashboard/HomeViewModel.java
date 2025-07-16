@@ -4,97 +4,71 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.ntramanh1204.screenvocab.ScreenVocabApp;
-import com.ntramanh1204.screenvocab.core.di.AppContainer;
-import com.ntramanh1204.screenvocab.data.local.entities.WallpaperEntity;
+import com.ntramanh1204.screenvocab.domain.model.Wallpaper;
 import com.ntramanh1204.screenvocab.domain.repository.AuthRepository;
 import com.ntramanh1204.screenvocab.domain.repository.CollectionRepository;
-import com.ntramanh1204.screenvocab.domain.repository.WallpaperRepository;
+import com.ntramanh1204.screenvocab.domain.usecase.wallpaper.GetWallpapersByUserUseCase;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class HomeViewModel extends ViewModel {
+
+    private static final int PAGE_SIZE = 9; // 3x3 grid per page
+
     private final CollectionRepository collectionRepository;
-    private final WallpaperRepository wallpaperRepository;
+    private final GetWallpapersByUserUseCase getWallpapersByUserUseCase;
     private final AuthRepository authRepository;
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
+    // LiveData
     private final MutableLiveData<Integer> collectionsCount = new MutableLiveData<>(0);
-    private final MutableLiveData<List<String>> wallpapers = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<List<Wallpaper>> wallpapers = new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<String> error = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> isLoadingMore = new MutableLiveData<>(false);
 
-    public HomeViewModel(CollectionRepository collectionRepository, WallpaperRepository wallpaperRepository, AuthRepository authRepository) {
+    // Pagination state
+    private int currentPage = 0;
+    private boolean isLastPage = false;
+    private String currentUserId = null;
+    private final List<Wallpaper> allWallpapers = new ArrayList<>();
+
+    public HomeViewModel(CollectionRepository collectionRepository,
+                         GetWallpapersByUserUseCase getWallpapersByUserUseCase,
+                         AuthRepository authRepository) {
         this.collectionRepository = collectionRepository;
-        this.wallpaperRepository = wallpaperRepository;
+        this.getWallpapersByUserUseCase = getWallpapersByUserUseCase;
         this.authRepository = authRepository;
     }
 
+    // Getters
     public LiveData<Integer> getCollectionsCount() { return collectionsCount; }
-    public LiveData<List<String>> getWallpapers() { return wallpapers; }
+    public LiveData<List<Wallpaper>> getWallpapers() { return wallpapers; }
     public LiveData<String> getError() { return error; }
     public LiveData<Boolean> getIsLoading() { return isLoading; }
+    public LiveData<Boolean> getIsLoadingMore() { return isLoadingMore; }
 
+    /**
+     * Load initial data (first page)
+     */
     public void loadData() {
         isLoading.setValue(true);
         error.setValue(null);
+        resetPagination();
 
-        loadWallpapersFromDirectory(); // 👈 dùng logic không cần DB
-
-        compositeDisposable.add(
-                authRepository.getCurrentUser()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                user -> loadDataForUser(user.getUserId()),
-                                throwable -> {
-                                    error.setValue("Failed to get user: " + throwable.getMessage());
-                                    isLoading.setValue(false);
-                                    collectionsCount.setValue(0);
-                                    wallpapers.setValue(new ArrayList<>());
-                                }
-                        )
-        );
-    }
-
-    public void loadData(String collectionId) {
-        isLoading.setValue(true);
-        error.setValue(null);
         compositeDisposable.add(
                 authRepository.getCurrentUser()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 user -> {
-                                    String userId = user != null ? user.getUserId() : "guest";
-                                    loadDataForUser(userId);
-                                    // Load wallpapers for collectionId
-                                    compositeDisposable.add(
-                                            wallpaperRepository.getWallpapersByCollection(collectionId)
-                                                    .subscribeOn(Schedulers.io())
-                                                    .observeOn(AndroidSchedulers.mainThread())
-                                                    .subscribe(
-                                                            wallpaperEntities -> {
-                                                                List<String> wallpaperUrls = new ArrayList<>();
-                                                                for (WallpaperEntity entity : wallpaperEntities) {
-                                                                    wallpaperUrls.add(entity.getLocalFileUrl() != null ? entity.getLocalFileUrl() : entity.getThumbnailUrl());
-                                                                }
-                                                                wallpapers.setValue(wallpaperUrls);
-                                                                isLoading.setValue(false);
-                                                            },
-                                                            throwable -> {
-                                                                error.setValue("Failed to load wallpapers: " + throwable.getMessage());
-                                                                wallpapers.setValue(new ArrayList<>());
-                                                                isLoading.setValue(false);
-                                                            }
-                                                    )
-                                    );
+                                    currentUserId = user != null ? user.getUserId() : "guest";
+                                    loadDataForUser(currentUserId);
                                 },
                                 throwable -> {
                                     error.setValue("Failed to get user: " + throwable.getMessage());
@@ -106,80 +80,118 @@ public class HomeViewModel extends ViewModel {
         );
     }
 
+    /**
+     * Load data for specific collection (if needed)
+     */
+    public void loadData(String collectionId) {
+        // For now, we'll load all user wallpapers
+        // You can extend this to filter by collection if needed
+        loadData();
+    }
+
+    /**
+     * Load more wallpapers (for infinite scroll)
+     */
+    public void loadMoreWallpapers() {
+        if (isLastPage || isLoadingMore.getValue() == Boolean.TRUE || currentUserId == null) {
+            return;
+        }
+
+        isLoadingMore.setValue(true);
+        error.setValue(null);
+
+        compositeDisposable.add(
+                getWallpapersByUserUseCase.execute(currentUserId, currentPage + 1, PAGE_SIZE)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                newWallpapers -> {
+                                    if (newWallpapers.isEmpty()) {
+                                        isLastPage = true;
+                                    } else {
+                                        currentPage++;
+                                        allWallpapers.addAll(newWallpapers);
+                                        wallpapers.setValue(new ArrayList<>(allWallpapers));
+                                    }
+                                    isLoadingMore.setValue(false);
+                                },
+                                throwable -> {
+                                    error.setValue("Failed to load more wallpapers: " + throwable.getMessage());
+                                    isLoadingMore.setValue(false);
+                                }
+                        )
+        );
+    }
+
+    /**
+     * Refresh wallpapers (pull to refresh)
+     */
+    public void refreshWallpapers() {
+        loadData();
+    }
+
+    /**
+     * Check if can load more wallpapers
+     */
+    public boolean canLoadMore() {
+        return !isLastPage && isLoadingMore.getValue() != Boolean.TRUE;
+    }
 
     private void loadDataForUser(String userId) {
         // Load collections count
+        loadCollectionsCount(userId);
+
+        // Load first page of wallpapers
+        loadWallpapersFirstPage(userId);
+    }
+
+    private void loadCollectionsCount(String userId) {
         compositeDisposable.add(
                 collectionRepository.getCollectionsByUser(userId)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                collections -> {
-                                    collectionsCount.setValue(collections.size());
-                                    isLoading.setValue(false);
-                                },
+                                collections -> collectionsCount.setValue(collections.size()),
                                 throwable -> {
                                     error.setValue("Failed to load collections: " + throwable.getMessage());
                                     collectionsCount.setValue(0);
+                                }
+                        )
+        );
+    }
+
+    private void loadWallpapersFirstPage(String userId) {
+        compositeDisposable.add(
+                getWallpapersByUserUseCase.execute(userId, 0, PAGE_SIZE)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                wallpaperList -> {
+                                    allWallpapers.clear();
+                                    allWallpapers.addAll(wallpaperList);
+                                    wallpapers.setValue(new ArrayList<>(allWallpapers));
+
+                                    // Check if it's the last page
+                                    if (wallpaperList.size() < PAGE_SIZE) {
+                                        isLastPage = true;
+                                    }
+
+                                    isLoading.setValue(false);
+                                },
+                                throwable -> {
+                                    error.setValue("Failed to load wallpapers: " + throwable.getMessage());
+                                    wallpapers.setValue(new ArrayList<>());
                                     isLoading.setValue(false);
                                 }
                         )
         );
-
-        // Load wallpapers (placeholder for now)
-//        List<String> placeholderWallpapers = new ArrayList<>();
-//        for (int i = 0; i < 9; i++) {
-//            placeholderWallpapers.add("demo_placeholder");
-//        }
-//        wallpapers.setValue(placeholderWallpapers);
-
-        // TODO: Uncomment to load real wallpapers
-//        /*
-        compositeDisposable.add(
-            wallpaperRepository.getWallpapersByCollection(userId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    wallpaperEntities -> {
-                        List<String> wallpaperUrls = new ArrayList<>();
-                        for (WallpaperEntity entity : wallpaperEntities) {
-//                            wallpaperUrls.add(entity.getLocalFileUrl());
-                            wallpaperUrls.add(entity.getLocalFileUrl() != null ? entity.getLocalFileUrl() : entity.getThumbnailUrl());
-                        }
-                        wallpapers.setValue(wallpaperUrls);
-                        isLoading.setValue(false);
-                    },
-                    throwable -> {
-                        error.setValue("Failed to load wallpapers: " + throwable.getMessage());
-                        wallpapers.setValue(new ArrayList<>());
-                        isLoading.setValue(false);
-                    }
-                )
-        );
-//        */
     }
 
-    private void loadWallpapersFromDirectory() {
-        File dir = new File(ScreenVocabApp.getInstance().getContext().getExternalFilesDir(null), "wallpapers");
-        if (dir.exists() && dir.isDirectory()) {
-            File[] files = dir.listFiles((file, name) -> name.endsWith(".png"));
-
-            List<String> paths = new ArrayList<>();
-            if (files != null) {
-                for (File file : files) {
-                    paths.add(file.getAbsolutePath());
-                }
-            }
-
-            // Sắp xếp theo ngày tạo (mới nhất lên trước)
-            Collections.sort(paths, (a, b) -> Long.compare(new File(b).lastModified(), new File(a).lastModified()));
-
-            wallpapers.setValue(paths);
-        } else {
-            wallpapers.setValue(new ArrayList<>());
-        }
+    private void resetPagination() {
+        currentPage = 0;
+        isLastPage = false;
+        allWallpapers.clear();
     }
-
 
     @Override
     protected void onCleared() {
